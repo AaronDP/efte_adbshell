@@ -11,6 +11,7 @@
 #include "fte.h"
 #include "clip.h"
 
+#if !defined(__ANDROID__)
 #define INCL_WIN
 #define INCL_DOS
 #define INCL_ORDINALS
@@ -438,3 +439,4 @@ int PutClipText(ClipData *cd) {
     LeavePmClipboard();
     return rc;
 }
+#endif

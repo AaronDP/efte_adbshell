@@ -9,7 +9,8 @@
  *
  */
 
-#include <ncurses.h>
+//#include <ncurses.h>
+#include <curses.h>
 #include <unistd.h>
 
 #include "sysdep.h"

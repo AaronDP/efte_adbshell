@@ -10,7 +10,7 @@
 cmake_minimum_required(VERSION 2.4)
 
 PROJECT( eFTE )
-ADD_SUBDIRECTORY( src )
+ADD_SUBDIRECTORY( jni )
 
 INSTALL( DIRECTORY config
          DESTINATION share/efte

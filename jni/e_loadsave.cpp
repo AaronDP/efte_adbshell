@@ -398,7 +398,7 @@ int EBuffer::LoadFrom(const char *AFileName) {
         FileOk = 0;
         goto fail;
     } else {
-        if (!(FileStatus.st_mode & (S_IWRITE | S_IWGRP | S_IWOTH)))
+        if (!(FileStatus.st_mode & (S_IWUSR | S_IWGRP | S_IWOTH)))
             BFI(this, BFI_ReadOnly) = 1;
         else
             BFI(this, BFI_ReadOnly) = 0;

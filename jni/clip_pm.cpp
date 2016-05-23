@@ -12,6 +12,7 @@
 #include "clip.h"
 
 #define INCL_WIN
+#if !defined(__ANDROID__)
 #include <os2.h>
 #include <string.h>
 #include <stdlib.h>
@@ -54,3 +55,4 @@ int PutClipText(ClipData *cd) {
     }
     return 0;
 }
+#endif

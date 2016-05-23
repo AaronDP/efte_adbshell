@@ -10,6 +10,8 @@
 
 // OS/2 does not allow VIO programs to use the clipboard :-(
 
+
+#if !defined(__ANDROID__)
 #include "fte.h"
 #include "clip.h"
 
@@ -101,3 +103,4 @@ int PutClipText(ClipData *cd) {
     return 0;
 
 }
+#endif

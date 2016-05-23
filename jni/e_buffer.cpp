@@ -249,7 +249,7 @@ int EBuffer::Modify() {
             //  file save routines will check this (oh well).  --ryan.
             struct stat StatBuf;
             if ((FileName != 0) && FileOk && (stat(FileName, &StatBuf) == 0)) {
-                if (!(StatBuf.st_mode & (S_IWRITE | S_IWGRP | S_IWOTH)))
+                if (!(StatBuf.st_mode & (S_IWUSR | S_IWGRP | S_IWOTH)))
                     BFI(this, BFI_ReadOnly) = 1;
                 else
                     BFI(this, BFI_ReadOnly) = 0;

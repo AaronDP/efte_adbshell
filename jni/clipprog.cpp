@@ -9,6 +9,7 @@
  */
 
 
+#if !defined(__ANDROID__)
 #define INCL_DOS
 #define INCL_PM
 #include <os2.h>
@@ -71,3 +72,4 @@ int main() {
     return 0;
 }
 
+#endif
