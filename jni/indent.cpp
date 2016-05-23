@@ -13,23 +13,24 @@
 /* place holder */
 
 int Indent_SIMPLE(EBuffer *B, int Line, int /*PosCursor*/) {
-    int Pos, Old;
+  int Pos, Old;
 
-    if (Line == 0) {
-        Pos = 0;
-    } else {
-        if (B->RLine(Line - 1)->StateE == 0) {
-            Pos = B->LineIndented(Line - 1);
-        } else { // for comments, strings, etc, use same as prev line.
-            Pos = B->LineIndented(Line - 1);
-        }
+  if (Line == 0) {
+    Pos = 0;
+  } else {
+    if (B->RLine(Line - 1)->StateE == 0) {
+      Pos = B->LineIndented(Line - 1);
+    } else { // for comments, strings, etc, use same as prev line.
+      Pos = B->LineIndented(Line - 1);
     }
+  }
 
-    Old = B->LineIndented(Line);
-    if (Pos < 0)
-        Pos = 0;
-    if (Pos != Old)
-        if (B->IndentLine(Line, Pos) == 0)
-            return 0;;
-    return 1;
+  Old = B->LineIndented(Line);
+
+  if (Pos < 0) Pos = 0;
+
+  if (Pos != Old)
+    if (B->IndentLine(Line, Pos) == 0) return 0; ;
+  return 1;
 }
+

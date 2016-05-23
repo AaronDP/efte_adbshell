@@ -22,8 +22,8 @@
 #define kfAll       0x00F00000L
 
 #define isAltXXX(x) (((x) & (kfAltXXX)) != 0)
-#define isAlt(x)  (((x) & kfAlt) != 0)
-#define isCtrl(x)  (((x) & kfCtrl) != 0)
+#define isAlt(x) (((x) & kfAlt) != 0)
+#define isCtrl(x) (((x) & kfCtrl) != 0)
 #define isShift(x) (((x) & kfShift) != 0)
 #define isGray(x) (((x) & kfGray) != 0)
 #define keyType(x) ((x) & kfAll)
@@ -75,4 +75,4 @@
 #define kbSysReq     (kfSpecial | 0x403)
 #define kbBreak      (kfSpecial | 0x404)
 
-#endif
+#endif // ifndef CONKBD_H_

@@ -15,7 +15,7 @@
 #include "sysdep.h"
 
 #ifdef NEED_LOG_H
-#include "log.h"
+# include "log.h"
 #endif // NEED_LOG_H
 #include "console.h"
 #include "gui.h"
@@ -65,10 +65,10 @@
 #include "h_c.h"
 
 #if defined(_DEBUG) && defined(MSVC) && defined(MSVCDEBUG)
-#include <crtdbg.h>
+# include <crtdbg.h>
 
-#define new new( _CLIENT_BLOCK, __FILE__, __LINE__)
+# define new new (_CLIENT_BLOCK, __FILE__, __LINE__)
 
-#endif //_DEBUG && MSVC && MSVCDEBUG
+#endif // _DEBUG && MSVC && MSVCDEBUG
 
-#endif
+#endif // ifndef FTE_H_

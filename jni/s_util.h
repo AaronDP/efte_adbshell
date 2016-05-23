@@ -22,14 +22,23 @@ class EView;
 class EBuffer;
 class EModel;
 
-char* MakeBackup(const char *FileName, char *NewName);
+char* MakeBackup(const char *FileName,
+                 char       *NewName);
 
-int GetPMClip(int clipboard);
-int PutPMClip(int clipboard);
+int   GetPMClip(int clipboard);
+int   PutPMClip(int clipboard);
 
-int FileLoad(int createFlags, const char *FileName, const  char *Mode, EView *View);
-int MultiFileLoad(int createFlags, const char *FileName, const char *Mode, EView *View);
+int   FileLoad(int          createFlags,
+               const char  *FileName,
+               const  char *Mode,
+               EView       *View);
+int MultiFileLoad(int         createFlags,
+                  const char *FileName,
+                  const char *Mode,
+                  EView      *View);
 int SetDefaultDirectory(EModel *M);
-int GetDefaultDirectory(EModel *M, char *Path, int MaxLen);
+int GetDefaultDirectory(EModel *M,
+                        char   *Path,
+                        int     MaxLen);
 
-#endif
+#endif // ifndef S_UTIL_H_

@@ -16,137 +16,144 @@
 char DesktopFileName[256] = "";
 
 int SaveDesktop(char *FileName) {
-    FILE *fp;
-    EModel *M;
+  FILE   *fp;
+  EModel *M;
 
-    fp = fopen(FileName, "w");
-    if (fp == 0)
-        return 0;
+  fp = fopen(FileName, "w");
 
-    setvbuf(fp, FileBuffer, _IOFBF, sizeof(FileBuffer));
+  if (fp == 0) return 0;
 
-    fprintf(fp, DESKTOP_VER);
+        setvbuf(fp, FileBuffer, _IOFBF, sizeof(FileBuffer));
 
-    M = ActiveModel;
-    while (M) {
-        switch (M->GetContext()) {
-        case CONTEXT_FILE:
-            if (M != CvsLogView) {
-                EBuffer *B = (EBuffer *)M;
-                fprintf(fp, "F|%d|%s\n", B->ModelNo, B->FileName);
-            }
-            break;
+        fprintf(fp, DESKTOP_VER);
 
-        case CONTEXT_DIRECTORY: {
-            EDirectory *D = (EDirectory *)M;
-            fprintf(fp, "D|%d|%s\n", D->ModelNo, D->Path);
-        }
-        break;
-        }
-        M = M->Next;
-        if (M == ActiveModel)
-            break;
+  M = ActiveModel;
+
+  while (M) {
+    switch (M->GetContext()) {
+    case CONTEXT_FILE:
+
+      if (M != CvsLogView) {
+        EBuffer *B = (EBuffer *)M;
+        fprintf(fp, "F|%d|%s\n", B->ModelNo, B->FileName);
+      }
+      break;
+
+    case CONTEXT_DIRECTORY: {
+      EDirectory *D = (EDirectory *)M;
+        fprintf(fp, "D|%d|%s\n", D->ModelNo, D->Path);
+      break;
     }
-    TagsSave(fp);
-    markIndex.SaveToDesktop(fp);
-    fclose(fp);
-    return 1;
+    }
+    M = M->Next;
+
+    if (M == ActiveModel) break;
+  }
+  TagsSave(fp);
+  markIndex.SaveToDesktop(fp);
+  fclose(fp);
+  return 1;
 }
 
 int LoadDesktop(char *FileName) {
-    FILE *fp;
-    char line[512];
-    char *p, *e;
-    int FLCount = 0;
+  FILE *fp;
+  char  line[512];
+  char *p, *e;
+  int   FLCount = 0;
 
-    TagClear();
+  TagClear();
 
-    fp = fopen(FileName, "r");
-    if (fp == 0)
-        return 0;
+  fp = fopen(FileName, "r");
 
-    //setvbuf(fp, FileBuffer, _IOFBF, sizeof(FileBuffer));
+  if (fp == 0) return 0;
 
-    if (fgets(line, sizeof(line), fp) == 0 ||
-            (strcmp(line, DESKTOP_VER) != 0 &&
-             (strcmp(line, DESKTOP_VER1) != 0))) {
-        fclose(fp);
-        return 0;
-    }
-    while (fgets(line, sizeof(line), fp) != 0) {
-        e = strchr(line, '\n');
-        if (e == 0)
-            break;
-        *e = 0;
-        if ((line[0] == 'D' || line[0] == 'F') && line[1] == '|') {
-            int ModelNo = -1;
-            p = line + 2;
-            if (isdigit(*p)) {
-                ModelNo = atoi(p);
-                while (isdigit(*p)) p++;
-                if (*p == '|')
-                    p++;
-            }
+  // setvbuf(fp, FileBuffer, _IOFBF, sizeof(FileBuffer));
 
-            if (line[0] == 'F') { // file
-                if (FLCount > 0)
-                    suspendLoads = 1;
-                if (FileLoad(0, p, 0, ActiveView))
-                    FLCount++;
-                suspendLoads  = 0;
-            } else if (line[0] == 'D') { // directory
-                EModel *m = new EDirectory(0, &ActiveModel, p);
-                if (m == 0 || ActiveModel == 0) {
-                    ActiveView->MView->Win->Choice(GPC_ERROR, "Error", 1, "O&K",
-                                                   "Could not create directory view");
-                    return 0;
-                }
-            }
-
-            if (ActiveModel) {
-                if (ModelNo != -1) {
-                    if (FindModelID(ActiveModel, ModelNo) == 0)
-                        ActiveModel->ModelNo = ModelNo;
-                }
-
-                if (ActiveModel != ActiveModel->Next) {
-                    suspendLoads = 1;
-                    ActiveView->SelectModel(ActiveModel->Next);
-                    suspendLoads  = 0;
-                }
-            }
-        } else {
-            if (line[0] == 'T' && line[1] == '|') { // tag file
-                TagsAdd(line + 2);
-            } else if (line[0] == 'M' && line[1] == '|') { // mark
-                char *name;
-                char *file;
-                EPoint P;
-                //long l;
-                char *c;
-
-                p = line + 2;
-                P.Row = strtol(p, &c, 10);
-                if (*c != '|')
-                    break;
-                p = c + 1;
-                P.Col = strtol(p, &c, 10);
-                if (*c != '|')
-                    break;
-                p = c + 1;
-                name = p;
-                while (*p && *p != '|')
-                    p++;
-                if (*p == '|')
-                    *p++ = 0;
-                else
-                    break;
-                file = p;
-
-                markIndex.Insert(name, file, P);
-            }
-        }
-    }
+  if ((fgets(line, sizeof(line), fp) == 0) ||
+      ((strcmp(line, DESKTOP_VER) != 0) &&
+       (strcmp(line, DESKTOP_VER1) != 0))) {
     fclose(fp);
-    return 1;
+    return 0;
+  }
+
+  while (fgets(line, sizeof(line), fp) != 0) {
+    e = strchr(line, '\n');
+
+    if (e == 0) break;
+    *e = 0;
+
+    if (((line[0] == 'D') || (line[0] == 'F')) && (line[1] == '|')) {
+      int ModelNo = -1;
+      p = line + 2;
+
+      if (isdigit(*p)) {
+        ModelNo = atoi(p);
+
+        while (isdigit(*p)) p++;
+
+        if (*p == '|') p++;
+      }
+
+      if (line[0] == 'F') { // file
+        if (FLCount > 0) suspendLoads = 1;
+
+        if (FileLoad(0, p, 0, ActiveView)) FLCount++;
+        suspendLoads = 0;
+      } else if (line[0] == 'D') { // directory
+        EModel *m = new EDirectory(0, &ActiveModel, p);
+
+        if ((m == 0) || (ActiveModel == 0)) {
+          ActiveView->MView->Win->Choice(GPC_ERROR, "Error", 1, "O&K",
+                                         "Could not create directory view");
+          return 0;
+        }
+      }
+
+      if (ActiveModel) {
+        if (ModelNo != -1) {
+          if (FindModelID(ActiveModel,
+                          ModelNo) == 0) ActiveModel->ModelNo = ModelNo;
+        }
+
+        if (ActiveModel != ActiveModel->Next) {
+          suspendLoads = 1;
+          ActiveView->SelectModel(ActiveModel->Next);
+          suspendLoads = 0;
+        }
+      }
+    } else {
+      if ((line[0] == 'T') && (line[1] == '|')) {        // tag file
+        TagsAdd(line + 2);
+      } else if ((line[0] == 'M') && (line[1] == '|')) { // mark
+        char  *name;
+        char  *file;
+        EPoint P;
+
+        // long l;
+        char *c;
+
+        p     = line + 2;
+        P.Row = strtol(p, &c, 10);
+
+        if (*c != '|') break;
+        p     = c + 1;
+        P.Col = strtol(p, &c, 10);
+
+        if (*c != '|') break;
+        p    = c + 1;
+        name = p;
+
+        while (*p && *p != '|') p++;
+
+        if (*p == '|') *p++ = 0;
+        else break;
+        file = p;
+
+        markIndex.Insert(name, file, P);
+      }
+    }
+  }
+  fclose(fp);
+  return 1;
 }
+

@@ -28,68 +28,79 @@ class EView;
 class EColorize;
 
 typedef struct {
-    TKeyCode Mask;
-    TKeyCode Key;
+  TKeyCode Mask;
+  TKeyCode Key;
 } KeySel;
 
 typedef struct {
-    RxNode *regex;
-    int look_line;
-    int affect_line;
-    int indent;
-    int flags;
+  RxNode *regex;
+  int     look_line;
+  int     affect_line;
+  int     indent;
+  int     flags;
 } IndentRx;
 
 class EMode {
 public:
-    EMode *fNext;
-    char *fName;
-    char *MatchName;
-    char *MatchLine;
-    RxNode *MatchNameRx;
-    RxNode *MatchLineRx;
-    EBufferFlags Flags;
-    EEventMap *fEventMap;
-    EMode *fParent;
-    EColorize *fColorize;
-    IndentRx indents[25];
-    int indent_count;
-    char filename[256];
 
-    EMode(EMode *aMode, EEventMap *Map, const char *aName);
-    ~EMode();
-    EAbbrev *FindAbbrev(const char *string);
-    void AddIndentRx(int look_line, int affect_line, int indent, const char *regex, int flags);
+  EMode  *fNext;
+  char   *fName;
+  char   *MatchName;
+  char   *MatchLine;
+  RxNode *MatchNameRx;
+  RxNode *MatchLineRx;
+  EBufferFlags Flags;
+  EEventMap   *fEventMap;
+  EMode *fParent;
+  EColorize *fColorize;
+  IndentRx   indents[25];
+  int  indent_count;
+  char filename[256];
+
+  EMode(EMode      *aMode,
+        EEventMap  *Map,
+        const char *aName);
+  ~EMode();
+  EAbbrev* FindAbbrev(const char *string);
+  void     AddIndentRx(int         look_line,
+                       int         affect_line,
+                       int         indent,
+                       const char *regex,
+                       int         flags);
 };
 
 class EKeyMap {
 public:
-    EKeyMap *fParent;
-    EKey *fKeys;
 
-    EKeyMap();
-    ~EKeyMap();
+  EKeyMap *fParent;
+  EKey    *fKeys;
 
-    void AddKey(EKey *aKey);
-    EKey *FindKey(TKeyCode aKey);
+  EKeyMap();
+  ~EKeyMap();
+
+  void  AddKey(EKey *aKey);
+  EKey* FindKey(TKeyCode aKey);
 };
 
 class EEventMap {
 public:
-    EEventMap *Next;
-    EEventMap *Parent;
-    char *Name;
 
-    EKeyMap *KeyMap;
-    char *Menu[EM_MENUS]; // main + local
+  EEventMap *Next;
+  EEventMap *Parent;
+  char *Name;
 
-    EAbbrev *abbrev[ABBREV_HASH];
+  EKeyMap *KeyMap;
+  char    *Menu[EM_MENUS]; // main + local
 
-    EEventMap(const char *AName, EEventMap *AParent);
-    ~EEventMap();
-    void SetMenu(int which, const char *What);
-    char *GetMenu(int which);
-    int AddAbbrev(EAbbrev *ab);
+  EAbbrev *abbrev[ABBREV_HASH];
+
+  EEventMap(const char *AName,
+            EEventMap  *AParent);
+  ~EEventMap();
+  void  SetMenu(int         which,
+                const char *What);
+  char* GetMenu(int which);
+  int   AddAbbrev(EAbbrev *ab);
 };
 
 #define CT_COMMAND  0
@@ -99,52 +110,61 @@ public:
 #define CT_CONCAT   4 /* concatenate strings */
 
 typedef struct {
-    int type;
-    short repeat;
-    short ign;
-    union {
-        long num;
-        char *string;
-    } u;
+  int   type;
+  short repeat;
+  short ign;
+  union {
+    long  num;
+    char *string;
+  } u;
 } CommandType;
 
 typedef struct {
-    char *Name;
-    int Count;
-    CommandType *cmds;
+  char        *Name;
+  int          Count;
+  CommandType *cmds;
 } ExMacro;
 
 class EKey {
 public:
-    KeySel fKey;
-    int Cmd;
-    EKeyMap *fKeyMap;
-    EKey *fNext;
 
-    EKey(char *aKey);
-    EKey(char *aKey, EKeyMap *aKeyMap);
-    ~EKey();
+  KeySel   fKey;
+  int      Cmd;
+  EKeyMap *fKeyMap;
+  EKey    *fNext;
+
+  EKey(char *aKey);
+  EKey(char    *aKey,
+       EKeyMap *aKeyMap);
+  ~EKey();
 };
 
 class EAbbrev {
 public:
-    EAbbrev *next;
-    int Cmd;
-    char *Match;
-    char *Replace;
 
-    EAbbrev(const char *aMatch, const char *aReplace);
-    EAbbrev(const char *aMatch, int aCmd);
-    ~EAbbrev();
+  EAbbrev *next;
+  int   Cmd;
+  char *Match;
+  char *Replace;
+
+  EAbbrev(const char *aMatch,
+          const char *aReplace);
+  EAbbrev(const char *aMatch,
+          int         aCmd);
+  ~EAbbrev();
 };
 
 class ExState { // state of macro execution
 public:
-    int Macro;
-    int Pos;
 
-    int GetStrParam(EView *view, char *str, int buflen);
-    int GetIntParam(EView *view, int *value);
+  int Macro;
+  int Pos;
+
+  int GetStrParam(EView *view,
+                  char  *str,
+                  int    buflen);
+  int GetIntParam(EView *view,
+                  int   *value);
 };
 
 extern EMode *Modes;
@@ -153,28 +173,41 @@ extern EEventMap *EventMaps;
 extern int CMacros;
 extern ExMacro *Macros;
 
-int GetCharFromEvent(TEvent &E, char *Ch);
+int         GetCharFromEvent(TEvent& E,
+                             char   *Ch);
 
-const char *GetCommandName(int Command);
-EMode *FindMode(const char *Name);
-EEventMap *FindEventMap(const char *Name);
-EEventMap *FindActiveMap(EMode *Mode);
-EMode *GetModeForName(const char *FileName);
-int CmdNum(const char *Cmd);
-void ExecKey(EKey *Key);
-EKey *SetKey(EEventMap *aMap, const char *Key);
-int ParseKey(const char *Key, KeySel &ks);
-int GetKeyName(char *Key, int KeySize, KeySel &ks);
+const char* GetCommandName(int Command);
+EMode*      FindMode(const char *Name);
+EEventMap*  FindEventMap(const char *Name);
+EEventMap*  FindActiveMap(EMode *Mode);
+EMode*      GetModeForName(const char *FileName);
+int         CmdNum(const char *Cmd);
+void        ExecKey(EKey *Key);
+EKey*       SetKey(EEventMap  *aMap,
+                   const char *Key);
+int         ParseKey(const char *Key,
+                     KeySel    & ks);
+int         GetKeyName(char   *Key,
+                       int     KeySize,
+                       KeySel& ks);
 
 void DefineWord(const char *s);
-int NewCommand(const char *Name);
-int RunCommand(int Command);
-int AddCommand(int no, int cmd, int count, int ign);
-int AddString(int no, const char *Command);
-int AddNumber(int no, long number);
-int AddVariable(int no, int number);
-int AddConcat(int no);
-int HashStr(const char *str, int maxim);
-void SetWordChars(char *w, const char *s);
+int  NewCommand(const char *Name);
+int  RunCommand(int Command);
+int  AddCommand(int no,
+                int cmd,
+                int count,
+                int ign);
+int  AddString(int         no,
+               const char *Command);
+int  AddNumber(int  no,
+               long number);
+int  AddVariable(int no,
+                 int number);
+int  AddConcat(int no);
+int  HashStr(const char *str,
+             int         maxim);
+void SetWordChars(char       *w,
+                  const char *s);
 
-#endif
+#endif // ifndef BIND_H_

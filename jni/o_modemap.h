@@ -11,36 +11,51 @@
 #ifndef MAPVIEW_H_
 #define MAPVIEW_H_
 
-class EventMapView: public EList {
+class EventMapView : public EList {
 public:
-    char **BList;
-    int BCount;
-    EEventMap *EMap;
 
-    void AddLine(const char *Line);
-    void DumpKey(const char *aPrefix, EKey *Key);
-    void DumpMap(const char *aPrefix, EKeyMap *aKeyMap);
-    void DumpEventMap(EEventMap *aEventMap);
+  char **BList;
+  int    BCount;
+  EEventMap *EMap;
 
-    EventMapView(int createFlags, EModel **ARoot, EEventMap *Map);
-    virtual ~EventMapView();
+  void AddLine(const char *Line);
+  void DumpKey(const char *aPrefix,
+               EKey       *Key);
+  void DumpMap(const char *aPrefix,
+               EKeyMap    *aKeyMap);
+  void DumpEventMap(EEventMap *aEventMap);
 
-    void FreeView();
-    void ViewMap(EEventMap *Map);
+  EventMapView(int        createFlags,
+               EModel   **ARoot,
+               EEventMap *Map);
+  virtual ~EventMapView();
 
-    virtual int ExecCommand(int Command, ExState &State);
-    virtual EEventMap *GetEventMap();
-    virtual int GetContext() const;
+  void               FreeView();
+  void               ViewMap(EEventMap *Map);
 
-    virtual void DrawLine(PCell B, int Line, int Col, ChColor color, int Width);
-    virtual char* FormatLine(int Line) const;
-    virtual void UpdateList();
-    virtual int CanActivate(int Line) const;
-    virtual void GetName(char *AName, int MaxLen) const;
-    virtual void GetInfo(char *AInfo, int MaxLen) const;
-    virtual void GetTitle(char *ATitle, int MaxLen, char *ASTitle, int SMaxLen) const;
+  virtual int        ExecCommand(int      Command,
+                                 ExState& State);
+  virtual EEventMap* GetEventMap();
+  virtual int        GetContext() const;
+
+  virtual void       DrawLine(PCell   B,
+                              int     Line,
+                              int     Col,
+                              ChColor color,
+                              int     Width);
+  virtual char* FormatLine(int Line) const;
+  virtual void  UpdateList();
+  virtual int   CanActivate(int Line) const;
+  virtual void  GetName(char *AName,
+                        int   MaxLen) const;
+  virtual void  GetInfo(char *AInfo,
+                        int   MaxLen) const;
+  virtual void  GetTitle(char *ATitle,
+                         int   MaxLen,
+                         char *ASTitle,
+                         int   SMaxLen) const;
 };
 
 extern EventMapView *TheEventMapView;
 
-#endif
+#endif // ifndef MAPVIEW_H_

@@ -13,32 +13,33 @@
 
 #define MAXISEARCH 256
 
-class ExISearch: public ExView {
+class ExISearch : public ExView {
 public:
-    typedef enum { IOk, INoMatch, INoPrev, INoNext } IState;
 
-    char ISearchStr[MAXISEARCH + 1];
-    EPoint Orig;
-    EPoint stack[MAXISEARCH];
-    int len;
-    int stacklen;
-    EBuffer *Buffer;
-    IState state;
-    int Direction;
+  typedef enum { IOk, INoMatch, INoPrev, INoNext } IState;
 
-    ExISearch(EBuffer *B);
-    virtual ~ExISearch();
-    virtual void Activate(int gotfocus);
+  char     ISearchStr[MAXISEARCH + 1];
+  EPoint   Orig;
+  EPoint   stack[MAXISEARCH];
+  int      len;
+  int      stacklen;
+  EBuffer *Buffer;
+  IState   state;
+  int      Direction;
 
-    virtual ExView *GetViewContext();
-    virtual int BeginMacro();
-    virtual void HandleEvent(TEvent &Event);
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
+  ExISearch(EBuffer *B);
+  virtual ~ExISearch();
+  virtual void    Activate(int gotfocus);
 
-    void SetState(IState state);
+  virtual ExView* GetViewContext();
+  virtual int     BeginMacro();
+  virtual void    HandleEvent(TEvent& Event);
+  virtual void    UpdateView();
+  virtual void    RepaintView();
+  virtual void    UpdateStatus();
+  virtual void    RepaintStatus();
+
+  void            SetState(IState state);
 };
 
-#endif
+#endif // ifndef ISEARCH_H_

@@ -15,26 +15,37 @@
 #ifndef CVSDIFF_H_
 #define CVSDIFF_H_
 
-class ECvsDiff: public ECvsBase {
+class ECvsDiff : public ECvsBase {
 public:
-    int CurrLine, ToLine, InToFile;
-    char *CurrFile;
 
-    ECvsDiff(int createFlags, EModel **ARoot, const char *Dir, const char *ACommand, const char *AOnFiles);
-    ~ECvsDiff();
+  int   CurrLine, ToLine, InToFile;
+  char *CurrFile;
 
-    void ParseFromTo(const char *line, int len);
-    virtual void ParseLine(const char *line, int len);
-    // Returns 0 if OK
-    virtual int RunPipe(const char *Dir, const char *Command, const char *OnFiles);
+  ECvsDiff(int         createFlags,
+           EModel    **ARoot,
+           const char *Dir,
+           const char *ACommand,
+           const char *AOnFiles);
+  ~ECvsDiff();
 
-    virtual int ExecCommand(int Command, ExState &State);
-    int BlockCopy(int Append);
+  void         ParseFromTo(const char *line,
+                           int         len);
+  virtual void ParseLine(const char *line,
+                         int         len);
 
-    virtual int GetContext() const;
-    virtual EEventMap *GetEventMap();
+  // Returns 0 if OK
+  virtual int RunPipe(const char *Dir,
+                      const char *Command,
+                      const char *OnFiles);
+
+  virtual int        ExecCommand(int      Command,
+                                 ExState& State);
+  int                BlockCopy(int Append);
+
+  virtual int        GetContext() const;
+  virtual EEventMap* GetEventMap();
 };
 
 extern ECvsDiff *CvsDiffView;
 
-#endif
+#endif // ifndef CVSDIFF_H_

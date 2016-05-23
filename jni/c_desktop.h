@@ -12,14 +12,14 @@
 #define DESKTOP_H_
 
 #ifdef UNIX
-#    define        DESKTOP_NAME       ".efte-desktop"
-#else
-#    define        DESKTOP_NAME       "efte.dsk"
-#endif
+# define        DESKTOP_NAME       ".efte-desktop"
+#else // ifdef UNIX
+# define        DESKTOP_NAME       "efte.dsk"
+#endif // ifdef UNIX
 
 extern char DesktopFileName[256];
 
 int SaveDesktop(char *FileName);
 int LoadDesktop(char *FileName);
 
-#endif
+#endif // ifndef DESKTOP_H_

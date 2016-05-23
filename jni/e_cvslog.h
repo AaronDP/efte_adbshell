@@ -18,33 +18,52 @@
 
 #include "e_buffer.h"
 
-class ECvsLog: public EBuffer {
+class ECvsLog : public EBuffer {
 public:
-    ECvsLog(int createFlags, EModel **ARoot, const char *Directory, const char *OnFiles);
-    ~ECvsLog();
 
-    // List files into buffer
-    // p        - line where to print
-    // fCount   - number of files which will be printed
-    // title    - title
-    // cnt      - total number of files
-    // position - positions of files in list
-    // len      - length of files
-    // status   - status of files
-    // list     - list of filenames
-    // incexc   - status of files to print/not to print
-    // exc      - incexc is exclusion
-    void ListFiles(int &p, const int fCount, const char *title, const int cnt, const int *position, const int *len, const char *status, const char *list, const char *excinc, const int exc = 0);
+  ECvsLog(int         createFlags,
+          EModel    **ARoot,
+          const char *Directory,
+          const char *OnFiles);
+  ~ECvsLog();
 
-    virtual int CanQuit() const;
-    virtual int ConfQuit(GxView *V, int multiFile = 0);
-    virtual EViewPort *CreateViewPort(EView *V);
+  // List files into buffer
+  // p        - line where to print
+  // fCount   - number of files which will be printed
+  // title    - title
+  // cnt      - total number of files
+  // position - positions of files in list
+  // len      - length of files
+  // status   - status of files
+  // list     - list of filenames
+  // incexc   - status of files to print/not to print
+  // exc      - incexc is exclusion
+  void ListFiles(int       & p,
+                 const int   fCount,
+                 const char *title,
+                 const int   cnt,
+                 const int  *position,
+                 const int  *len,
+                 const char *status,
+                 const char *list,
+                 const char *excinc,
+                 const int   exc = 0);
 
-    virtual void GetName(char *AName, int MaxLen) const;
-    virtual void GetInfo(char *AInfo, int MaxLen) const;
-    virtual void GetTitle(char *ATitle, int MaxLen, char *ASTitle, int SMaxLen) const;
+  virtual int        CanQuit() const;
+  virtual int        ConfQuit(GxView *V,
+                              int     multiFile = 0);
+  virtual EViewPort* CreateViewPort(EView *V);
+
+  virtual void       GetName(char *AName,
+                             int   MaxLen) const;
+  virtual void       GetInfo(char *AInfo,
+                             int   MaxLen) const;
+  virtual void       GetTitle(char *ATitle,
+                              int   MaxLen,
+                              char *ASTitle,
+                              int   SMaxLen) const;
 };
 
 extern ECvsLog *CvsLogView;
 
-#endif
+#endif // ifndef _CVSLOG_H_

@@ -16,9 +16,11 @@
 #define askCancel  2
 #define askOK      3
 
-int AskString(char *Prompt, char *String, int MaxLen);
+int AskString(char *Prompt,
+              char *String,
+              int   MaxLen);
 int AskYesNo(char *Prompt);
 int AskYesNoCancel(char *Prompt);
 int AskOKCancel(char *Prompt);
 
-#endif
+#endif // ifndef DIALOG_H_

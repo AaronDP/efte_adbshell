@@ -12,50 +12,60 @@
 #define FPOSHIST_H_
 
 #ifdef UNIX
-#define HISTORY_NAME ".efte-history"
-#else
-#define HISTORY_NAME "efte.his"
-#endif
+# define HISTORY_NAME ".efte-history"
+#else // ifdef UNIX
+# define HISTORY_NAME "efte.his"
+#endif // ifdef UNIX
 
 typedef struct {
-    char *Name;
-    int Row, Col;
+  char *Name;
+  int   Row, Col;
 } HBookmark;
 
 typedef struct {
-    char *FileName;
-    int Row, Col;
-    HBookmark **Books;
-    int BookCount;
+  char       *FileName;
+  int         Row, Col;
+  HBookmark **Books;
+  int         BookCount;
 } FPosHistory;
 
 #define MAX_INPUT_HIST 128
 
 typedef struct {
-    int Count;
-    char **Line;
-    int *Id;
+  int    Count;
+  char **Line;
+  int   *Id;
 } InputHistory;
 
 extern char HistoryFileName[256];
 
 void ClearHistory();
-int SaveHistory(const char *FileName);
-int LoadHistory(const char *FileName);
+int  SaveHistory(const char *FileName);
+int  LoadHistory(const char *FileName);
 
-int UpdateFPos(const char *FileName, int Row, int Col);
-int RetrieveFPos(const char *FileName, int &Row, int &Col);
+int  UpdateFPos(const char *FileName,
+                int         Row,
+                int         Col);
+int  RetrieveFPos(const char *FileName,
+                  int       & Row,
+                  int       & Col);
 
-int AddInputHistory(int Id, const char *String);
+int AddInputHistory(int         Id,
+                    const char *String);
 int CountInputHistory(int Id);
-int GetInputHistory(int Id, char *String, int maxlen, int Nth);
+int GetInputHistory(int   Id,
+                    char *String,
+                    int   maxlen,
+                    int   Nth);
 
 // some platforms don't know about EBuffer yet
 class EBuffer;
+
 /*
  * Get bookmarks for given Buffer (file) from history.
  */
 int RetrieveBookmarks(EBuffer *buf);
+
 /*
  * Store given Buffer's bookmarks to history.
  */
@@ -81,4 +91,4 @@ int StoreBookmarks(EBuffer *buf);
 #define HIST_SVNDIFF   16
 #define HIST_SVNCOMMIT 17
 
-#endif
+#endif // ifndef FPOSHIST_H_

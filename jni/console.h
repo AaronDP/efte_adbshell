@@ -83,20 +83,20 @@
 #define cmHScrollMove   19
 
 #define cmDroppedFile   30
-#define cmRenameFile    31   /* TODO: in-place editing of titlebar */
+#define cmRenameFile    31 /* TODO: in-place editing of titlebar */
 
 typedef unsigned char TAttr;
-typedef TAttr *PAttr;
+typedef TAttr        *PAttr;
 
 #ifdef NTCONSOLE
 typedef unsigned long TCell;
-#else
+#else // ifdef NTCONSOLE
 typedef unsigned short TCell;
-#endif
+#endif // ifdef NTCONSOLE
 
-typedef TCell *PCell;
-typedef TCell TDrawBuffer[ConMaxCols];
-typedef TDrawBuffer *PDrawBuffer;
+typedef TCell        *PCell;
+typedef TCell         TDrawBuffer[ConMaxCols];
+typedef TDrawBuffer  *PDrawBuffer;
 typedef unsigned long TEventMask;
 typedef unsigned long TKeyCode;
 typedef unsigned long TCommand;
@@ -105,114 +105,186 @@ class EModel; // forward
 class GView;
 
 typedef struct {
-    TEventMask What;
-    GView* View;
-    TKeyCode Code;
+  TEventMask What;
+  GView     *View;
+  TKeyCode   Code;
 } TKeyEvent;
 
 typedef struct {
-    TEventMask What;
-    GView* View;
-    long X;
-    long Y;
-    unsigned short Buttons;
-    unsigned short Count;
-    TKeyCode KeyMask;
+  TEventMask     What;
+  GView         *View;
+  long           X;
+  long           Y;
+  unsigned short Buttons;
+  unsigned short Count;
+  TKeyCode       KeyMask;
 } TMouseEvent;
 
 typedef struct {
-    TEventMask What;
-    GView *View;
-    EModel *Model;
-    TCommand Command;
-    long Param1;
-    void *Param2;
+  TEventMask What;
+  GView     *View;
+  EModel    *Model;
+  TCommand   Command;
+  long       Param1;
+  void      *Param2;
 } TMsgEvent;
 
 typedef union {
-    TEventMask What;
-    TKeyEvent Key;
-    TMouseEvent Mouse;
-    TMsgEvent Msg;
-    char fill[32];
+  TEventMask  What;
+  TKeyEvent   Key;
+  TMouseEvent Mouse;
+  TMsgEvent   Msg;
+  char        fill[32];
 } TEvent;
 
 #define SUBMENU_NORMAL      (-1)
 #define SUBMENU_CONDITIONAL (-2)
 
 typedef struct _mItem {
-    char *Name;
-    char *Arg;
-    int SubMenu;
-    int Cmd;
+  char *Name;
+  char *Arg;
+  int   SubMenu;
+  int   Cmd;
 } mItem;
 
 typedef struct _mMenu {
-    char *Name;
-    int Count;
-    mItem *Items;
+  char  *Name;
+  int    Count;
+  mItem *Items;
 } mMenu;
 
 extern int MenuCount;
 extern mMenu *Menus;
 
-int ConInit(int XSize, int YSize);
+int ConInit(int XSize,
+            int YSize);
 int ConDone();
 int ConSuspend();
 int ConContinue();
-int ConSetTitle(const char *Title, char *STitle);
-int ConGetTitle(char *Title, int MaxLen, char *STitle, int SMaxLen);
+int ConSetTitle(const char *Title,
+                char       *STitle);
+int ConGetTitle(char *Title,
+                int   MaxLen,
+                char *STitle,
+                int   SMaxLen);
 
 int ConClear();
-int ConPutBox(int X, int Y, int W, int H, PCell Cell);
-int ConGetBox(int X, int Y, int W, int H, PCell Cell);
-int ConPutLine(int X, int Y, int W, int H, PCell Cell);
-int ConSetBox(int X, int Y, int W, int H, TCell Cell);
-int ConScroll(int Way, int X, int Y, int W, int H, TAttr Fill, int Count);
+int ConPutBox(int   X,
+              int   Y,
+              int   W,
+              int   H,
+              PCell Cell);
+int ConGetBox(int   X,
+              int   Y,
+              int   W,
+              int   H,
+              PCell Cell);
+int ConPutLine(int   X,
+               int   Y,
+               int   W,
+               int   H,
+               PCell Cell);
+int ConSetBox(int   X,
+              int   Y,
+              int   W,
+              int   H,
+              TCell Cell);
+int ConScroll(int   Way,
+              int   X,
+              int   Y,
+              int   W,
+              int   H,
+              TAttr Fill,
+              int   Count);
 
-int ConSetSize(int X, int Y);
-int ConQuerySize(int *X, int *Y);
+int  ConSetSize(int X,
+                int Y);
+int  ConQuerySize(int *X,
+                  int *Y);
 
-int ConSetCursorPos(int X, int Y);
-int ConQueryCursorPos(int *X, int *Y);
-int ConShowCursor();
-int ConHideCursor();
-int ConCursorVisible();
+int  ConSetCursorPos(int X,
+                     int Y);
+int  ConQueryCursorPos(int *X,
+                       int *Y);
+int  ConShowCursor();
+int  ConHideCursor();
+int  ConCursorVisible();
 void ConSetInsertState(bool insert);
 
-int ConSetMousePos(int X, int Y);
-int ConQueryMousePos(int *X, int *Y);
-int ConShowMouse();
-int ConHideMouse();
-int ConMouseVisible();
-int ConQueryMouseButtons(int *ButtonCount);
+int  ConSetMousePos(int X,
+                    int Y);
+int  ConQueryMousePos(int *X,
+                      int *Y);
+int  ConShowMouse();
+int  ConHideMouse();
+int  ConMouseVisible();
+int  ConQueryMouseButtons(int *ButtonCount);
 
-int ConGetEvent(TEventMask EventMask, TEvent *Event, int WaitTime, int Delete);
-int ConPutEvent(TEvent Event);
+int  ConGetEvent(TEventMask EventMask,
+                 TEvent    *Event,
+                 int        WaitTime,
+                 int        Delete);
+int  ConPutEvent(TEvent Event);
 
-void MoveCh(PCell B, char Ch, TAttr Attr, int Count);
-void MoveChar(PCell B, int Pos, int Width, const char Ch, TAttr Attr, int Count);
-void MoveMem(PCell B, int Pos, int Width, const char* Ch, TAttr Attr, int Count);
-void MoveStr(PCell B, int Pos, int Width, const char* Ch, TAttr Attr, int MaxCount);
-void MoveCStr(PCell B, int Pos, int Width, const  char* Ch, TAttr A0, TAttr A1, int MaxCount);
-void MoveAttr(PCell B, int Pos, int Width, TAttr Attr, int Count);
-void MoveBgAttr(PCell B, int Pos, int Width, TAttr Attr, int Count);
+void MoveCh(PCell B,
+            char  Ch,
+            TAttr Attr,
+            int   Count);
+void MoveChar(PCell      B,
+              int        Pos,
+              int        Width,
+              const char Ch,
+              TAttr      Attr,
+              int        Count);
+void MoveMem(PCell       B,
+             int         Pos,
+             int         Width,
+             const char *Ch,
+             TAttr       Attr,
+             int         Count);
+void MoveStr(PCell       B,
+             int         Pos,
+             int         Width,
+             const char *Ch,
+             TAttr       Attr,
+             int         MaxCount);
+void MoveCStr(PCell        B,
+              int          Pos,
+              int          Width,
+              const  char *Ch,
+              TAttr        A0,
+              TAttr        A1,
+              int          MaxCount);
+void MoveAttr(PCell B,
+              int   Pos,
+              int   Width,
+              TAttr Attr,
+              int   Count);
+void MoveBgAttr(PCell B,
+                int   Pos,
+                int   Width,
+                TAttr Attr,
+                int   Count);
 
 int CStrLen(const char *s);
 
 int NewMenu(const char *Name);
-int NewItem(int menu, const char *Name);
-int NewSubMenu(int menu, const char *Name, int submenu, int type);
-int GetMenuId(const char *Name);
+int NewItem(int         menu,
+            const char *Name);
+int NewSubMenu(int         menu,
+               const char *Name,
+               int         submenu,
+               int         type);
+int  GetMenuId(const char *Name);
 
 char ConGetDrawChar(int index);
 
 extern char WindowFont[64];
 
 typedef struct {
-    unsigned char r, g, b;
+  unsigned char r, g, b;
 } TRGBColor;
 extern TRGBColor RGBColor[16];
 extern bool RGBColorValid[16];
 
-#endif
+#endif // ifndef CONSOLE_H_

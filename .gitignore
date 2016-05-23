@@ -10,3 +10,7 @@ obj/*
 jni/config.h
 jni/defcfg.h
 .notes.txt
+nefte
+bin2c
+*.unc-backup~
+*.unc-backup.md5~

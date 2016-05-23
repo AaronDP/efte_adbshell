@@ -44,4 +44,4 @@
 #define ucPlaceUserBookmark  17
 #define ucRemoveUserBookmark 18
 
-#endif
+#endif // ifndef UNDO_H_

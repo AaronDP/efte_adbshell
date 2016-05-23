@@ -17,16 +17,22 @@
 class EView;
 class EBuffer;
 
-int TagsAdd(const char *FileName);
-int TagsSave(FILE *fp);
-int TagsLoad(int id);
+int  TagsAdd(const char *FileName);
+int  TagsSave(FILE *fp);
+int  TagsLoad(int id);
 
-int TagLoad(const char *FileName);
+int  TagLoad(const char *FileName);
 void TagClear();
-int TagGoto(EView *V, char *Tag);
-int TagDefined(const char *Tag);
-int TagFind(EBuffer *B, EView *V, const char *Tag);
-int TagComplete(char **Words, int *WordsPos, int WordsMax, const char *Tag);
+int  TagGoto(EView *V,
+             char  *Tag);
+int  TagDefined(const char *Tag);
+int  TagFind(EBuffer    *B,
+             EView      *V,
+             const char *Tag);
+int  TagComplete(char      **Words,
+                 int        *WordsPos,
+                 int         WordsMax,
+                 const char *Tag);
 int TagNext(EView *V);
 int TagPrev(EView *V);
 int TagPop(EView *V);

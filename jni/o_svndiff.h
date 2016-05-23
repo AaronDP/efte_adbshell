@@ -15,26 +15,37 @@
 #ifndef SVNDIFF_H_
 #define SVNDIFF_H_
 
-class ESvnDiff: public ESvnBase {
+class ESvnDiff : public ESvnBase {
 public:
-    int CurrLine, ToLine, InToFile;
-    char *CurrFile;
 
-    ESvnDiff(int createFlags, EModel **ARoot, const char *Dir, const char *ACommand, char *AOnFiles);
-    ~ESvnDiff();
+  int   CurrLine, ToLine, InToFile;
+  char *CurrFile;
 
-    void ParseFromTo(const char *line, int len);
-    virtual void ParseLine(const char *line, int len);
-    // Returns 0 if OK
-    virtual int RunPipe(const char *Dir, const char *Command, const char *OnFiles);
+  ESvnDiff(int         createFlags,
+           EModel    **ARoot,
+           const char *Dir,
+           const char *ACommand,
+           char       *AOnFiles);
+  ~ESvnDiff();
 
-    virtual int ExecCommand(int Command, ExState &State);
-    int BlockCopy(int Append);
+  void         ParseFromTo(const char *line,
+                           int         len);
+  virtual void ParseLine(const char *line,
+                         int         len);
 
-    virtual int GetContext() const;
-    virtual EEventMap *GetEventMap();
+  // Returns 0 if OK
+  virtual int RunPipe(const char *Dir,
+                      const char *Command,
+                      const char *OnFiles);
+
+  virtual int        ExecCommand(int      Command,
+                                 ExState& State);
+  int                BlockCopy(int Append);
+
+  virtual int        GetContext() const;
+  virtual EEventMap* GetEventMap();
 };
 
 extern ESvnDiff *SvnDiffView;
 
-#endif
+#endif // ifndef SVNDIFF_H_

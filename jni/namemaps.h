@@ -34,4 +34,4 @@
 #define unlink     _unlink
 #define write      _write
 
-#endif
+#endif // ifndef NAMEMAPS_H_

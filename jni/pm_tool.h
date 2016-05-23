@@ -20,26 +20,29 @@
 #define WC_MTOOLBAR  "MToolBar"
 
 typedef struct {
-    ULONG ulType;
-    ULONG ulId;
-    ULONG ulCommand;
-    ULONG ulFlags;
-    HBITMAP hBitmap;
+  ULONG   ulType;
+  ULONG   ulId;
+  ULONG   ulCommand;
+  ULONG   ulFlags;
+  HBITMAP hBitmap;
 } ToolBarItem;
 
 typedef struct {
-    USHORT cb;
-    LONG ulCount;
-    ToolBarItem *pItems;
-    LONG ulDepressed;
+  USHORT       cb;
+  LONG         ulCount;
+  ToolBarItem *pItems;
+  LONG         ulDepressed;
 } ToolBarData;
 
-MRESULT EXPENTRY ToolBarProc(HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2);
+MRESULT EXPENTRY ToolBarProc(HWND   hwnd,
+                             ULONG  msg,
+                             MPARAM mp1,
+                             MPARAM mp2);
 void RegisterToolBarClass(HAB hab);
-HWND CreateToolBar(HWND parent,
-                   HWND owner,
-                   ULONG id,
-                   ULONG count,
+HWND CreateToolBar(HWND         parent,
+                   HWND         owner,
+                   ULONG        id,
+                   ULONG        count,
                    ToolBarItem *items);
 
-#endif
+#endif // ifndef TOOLBAR_H_

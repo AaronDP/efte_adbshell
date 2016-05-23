@@ -10,7 +10,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface AppController : NSObject {
-}
+@interface AppController : NSObject {}
 
 @end

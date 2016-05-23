@@ -11,23 +11,24 @@
 #ifndef EXKEY_H_
 #define EXKEY_H_
 
-class ExKey: public ExView {
+class ExKey : public ExView {
 public:
-    char *Prompt;
-    TKeyCode Key;
-    char ch;
 
-    ExKey(const char *APrompt);
-    virtual ~ExKey();
-    virtual void Activate(int gotfocus);
+  char *Prompt;
+  TKeyCode Key;
+  char     ch;
 
-    virtual ExView* GetViewContext();
-    virtual int BeginMacro();
-    virtual void HandleEvent(TEvent &Event);
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
+  ExKey(const char *APrompt);
+  virtual ~ExKey();
+  virtual void    Activate(int gotfocus);
+
+  virtual ExView* GetViewContext();
+  virtual int     BeginMacro();
+  virtual void    HandleEvent(TEvent& Event);
+  virtual void    UpdateView();
+  virtual void    RepaintView();
+  virtual void    UpdateStatus();
+  virtual void    RepaintStatus();
 };
 
-#endif
+#endif // ifndef EXKEY_H_

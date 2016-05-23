@@ -13,94 +13,106 @@
 
 class EList;
 
-class EListPort: public EViewPort {
+class EListPort : public EViewPort {
 public:
-    EList *List;
-    int Row, TopRow, LeftCol;
-    int OldRow, OldTopRow, OldLeftCol, OldCount;
-    EListPort(EList *L, EView *V);
-    virtual ~EListPort();
 
-    void StorePos();
-    void GetPos();
+  EList *List;
+  int    Row, TopRow, LeftCol;
+  int    OldRow, OldTopRow, OldLeftCol, OldCount;
+  EListPort(EList *L,
+            EView *V);
+  virtual ~EListPort();
 
-    virtual void HandleEvent(TEvent &Event);
-    virtual void HandleMouse(TEvent &Event);
+  void         StorePos();
+  void         GetPos();
 
-    void PaintView(int PaintAll);
+  virtual void HandleEvent(TEvent& Event);
+  virtual void HandleMouse(TEvent& Event);
 
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
+  void         PaintView(int PaintAll);
+
+  virtual void UpdateView();
+  virtual void RepaintView();
+  virtual void UpdateStatus();
+  virtual void RepaintStatus();
 };
 
-class EList: public EModel {
+class EList : public EModel {
 public:
-    char *Title;
-    int Row, LeftCol, TopRow, Count;
-    int MouseCaptured;
-    int MouseMoved;
-    int NeedsUpdate, NeedsRedraw;
 
-    EList(int createFlags, EModel **ARoot, const char *aTitle);
-    virtual ~EList();
+  char *Title;
+  int   Row, LeftCol, TopRow, Count;
+  int   MouseCaptured;
+  int   MouseMoved;
+  int   NeedsUpdate, NeedsRedraw;
 
-    virtual EViewPort *CreateViewPort(EView *V);
-    EListPort *GetViewVPort(EView *V);
-    EListPort *GetVPort();
+  EList(int         createFlags,
+        EModel    **ARoot,
+        const char *aTitle);
+  virtual ~EList();
 
-    void SetTitle(const char *ATitle);
+  virtual EViewPort* CreateViewPort(EView *V);
+  EListPort*         GetViewVPort(EView *V);
+  EListPort*         GetVPort();
 
-    virtual int ExecCommand(int Command, ExState &State);
-    virtual EEventMap *GetEventMap();
-    virtual int GetContext() const;
-    virtual int BeginMacro();
-    void HandleEvent(TEvent &Event);
+  void               SetTitle(const char *ATitle);
+
+  virtual int        ExecCommand(int      Command,
+                                 ExState& State);
+  virtual EEventMap* GetEventMap();
+  virtual int        GetContext() const;
+  virtual int        BeginMacro();
+  void               HandleEvent(TEvent& Event);
 
 
-    virtual void DrawLine(PCell B, int Line, int Col, ChColor color, int Width);
-    virtual char *FormatLine(int Line) const;
-    virtual int IsHilited(int Line) const;
-    virtual int IsMarked(int Line) const;
-    virtual int Mark(int Line);
-    virtual int Unmark(int Line);
+  virtual void       DrawLine(PCell   B,
+                              int     Line,
+                              int     Col,
+                              ChColor color,
+                              int     Width);
+  virtual char* FormatLine(int Line) const;
+  virtual int   IsHilited(int Line) const;
+  virtual int   IsMarked(int Line) const;
+  virtual int   Mark(int Line);
+  virtual int   Unmark(int Line);
 
-    int SetPos(int ARow, int ACol);
-    void FixPos();
-    virtual int GetRowLength(int ARow) const;
+  int           SetPos(int ARow,
+                       int ACol);
+  void          FixPos();
+  virtual int   GetRowLength(int ARow) const;
 
-    virtual void RescanList();
-    virtual void UpdateList();
-    virtual void FreeList();
-    virtual int CanActivate(int Line) const;
-    virtual int Activate(int No);
+  virtual void  RescanList();
+  virtual void  UpdateList();
+  virtual void  FreeList();
+  virtual int   CanActivate(int Line) const;
+  virtual int   Activate(int No);
 
-    int MoveLeft();
-    int MoveRight();
-    int MoveUp();
-    int MoveDown();
-    int MoveLineStart();
-    int MoveLineEnd();
-    int MovePageUp();
-    int MovePageDown();
-    int ScrollLeft(int Cols);
-    int ScrollRight(int Cols);
-    int ScrollUp(int Rows);
-    int ScrollDown(int Rows);
-    int MovePageStart();
-    int MovePageEnd();
-    int MoveFileStart();
-    int MoveFileEnd();
-    int Activate();
-    int Mark();
-    int Unmark();
-    int ToggleMark();
-    int MarkAll();
-    int UnmarkAll();
-    int ToggleMarkAll();
+  int           MoveLeft();
+  int           MoveRight();
+  int           MoveUp();
+  int           MoveDown();
+  int           MoveLineStart();
+  int           MoveLineEnd();
+  int           MovePageUp();
+  int           MovePageDown();
+  int           ScrollLeft(int Cols);
+  int           ScrollRight(int Cols);
+  int           ScrollUp(int Rows);
+  int           ScrollDown(int Rows);
+  int           MovePageStart();
+  int           MovePageEnd();
+  int           MoveFileStart();
+  int           MoveFileEnd();
+  int           Activate();
+  int           Mark();
+  int           Unmark();
+  int           ToggleMark();
+  int           MarkAll();
+  int           UnmarkAll();
+  int           ToggleMarkAll();
 
-    int UpdateRows(int minim, int maxim);
+  int           UpdateRows(int minim,
+                           int maxim);
 };
 
-#endif
+#endif // ifndef OLIST_H_

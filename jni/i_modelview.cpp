@@ -10,71 +10,71 @@
 
 #include "fte.h"
 
-ExModelView::ExModelView(EView *AView): ExView() {
-    View = AView;
-    View->MView = this;
-    MouseCaptured = 0;
-    MouseMoved = 0;
+ExModelView::ExModelView(EView *AView) : ExView() {
+  View          = AView;
+  View->MView   = this;
+  MouseCaptured = 0;
+  MouseMoved    = 0;
 }
 
 ExModelView::~ExModelView() {
-    if (View) { // close it
-        delete View;
-        View = 0;
-    }
+  if (View) { // close it
+    delete View;
+    View = 0;
+  }
 }
 
 int ExModelView::GetContext() const {
-    return View->GetContext();
+  return View->GetContext();
 }
 
 void ExModelView::Activate(int gotfocus) {
-    ExView::Activate(gotfocus);
-    View->Activate(gotfocus);
+  ExView::Activate(gotfocus);
+  View->Activate(gotfocus);
 }
 
-EEventMap *ExModelView::GetEventMap() {
-    return View->GetEventMap();
+EEventMap * ExModelView::GetEventMap() {
+  return View->GetEventMap();
 }
 
-int ExModelView::ExecCommand(int Command, ExState &State) {
-    return View->ExecCommand(Command, State);
+int ExModelView::ExecCommand(int Command, ExState& State) {
+  return View->ExecCommand(Command, State);
 }
 
 int ExModelView::BeginMacro() {
-    return View->BeginMacro();
+  return View->BeginMacro();
 }
 
-void ExModelView::HandleEvent(TEvent &Event) {
-    ExView::HandleEvent(Event);
-    View->HandleEvent(Event);
+void ExModelView::HandleEvent(TEvent& Event) {
+  ExView::HandleEvent(Event);
+  View->HandleEvent(Event);
 }
 
 void ExModelView::UpdateView() {
-    View->UpdateView();
+  View->UpdateView();
 }
 
 void ExModelView::RepaintView() {
-    View->RepaintView();
+  View->RepaintView();
 }
 
 void ExModelView::RepaintStatus() {
-    View->RepaintStatus();
+  View->RepaintStatus();
 }
 
 void ExModelView::UpdateStatus() {
-    View->UpdateStatus();
+  View->UpdateStatus();
 }
 
 void ExModelView::Resize(int width, int height) {
-    View->Resize(width, height);
+  View->Resize(width, height);
 }
 
 void ExModelView::WnSwitchBuffer(EModel *B) {
-    if (View)
-        View->SwitchToModel(B);
+  if (View) View->SwitchToModel(B);
 }
 
 int ExModelView::IsModelView() const {
-    return 1;
+  return 1;
 }
+

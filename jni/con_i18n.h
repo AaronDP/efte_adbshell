@@ -21,32 +21,32 @@
 #define XIM_INPUT_STYLE "Root"
 
 struct remapKey {
-    KeySym key_english;
-    KeySym key_remap;
+  KeySym key_english;
+  KeySym key_remap;
 };
 
 struct keyboardRec {
-    struct remapKey *tab;
-    KeySym deadkey;
-    short next;
+  struct remapKey *tab;
+  KeySym           deadkey;
+  short            next;
 };
 
 typedef struct {
-    XIC xic;
+  XIC xic;
 #if XlibSpecificationRelease >= 6
-    XIM xim;
-    XIMStyles* xim_styles;
-    XIMStyle input_style;
-#endif
+  XIM        xim;
+  XIMStyles *xim_styles;
+  XIMStyle   input_style;
+#endif // if XlibSpecificationRelease >= 6
 } i18n_context_t;
 
 /*
  * prototypes for I18N functions
  */
-void i18n_focus_out(i18n_context_t*);
-void i18n_focus_in(i18n_context_t*);
+void i18n_focus_out(i18n_context_t *);
+void i18n_focus_in(i18n_context_t *);
 int i18n_lookup_sym(XKeyEvent *, char *, int, KeySym *, XIC);
-i18n_context_t* i18n_open(Display *, Window, unsigned long *);
-void i18n_destroy(i18n_context_t**);
+i18n_context_t *i18n_open(Display *, Window, unsigned long *);
+void i18n_destroy(i18n_context_t **);
 
-#endif
+#endif // ifndef CONI18N_H_

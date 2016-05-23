@@ -16,32 +16,35 @@
 #include <stdlib.h>
 
 int main() {
-    int  i;
+  int i;
 
-    char buffer[30];
+  char buffer[30];
 
-    FILE *input;
-    FILE *output;
+  FILE *input;
+  FILE *output;
 
-    input = fopen("objs.inc", "r");
-    if (input == NULL) {
-        printf("objs.inc file not found\n");
-        return EXIT_FAILURE;
-    }
+  input = fopen("objs.inc", "r");
 
-    output = fopen("objs.mif", "w");
-    if (output == NULL) {
-        fclose(input);
-        printf("objs.mif not writable\n");
-        return EXIT_FAILURE;
-    }
+  if (input == NULL) {
+    printf("objs.inc file not found\n");
+    return EXIT_FAILURE;
+  }
 
-    while (fgets(buffer, 30, input) != NULL) {
-        for (i = 0; i < 30; i++) if (buffer[i] == '\\') buffer[i] = '&';
-        fputs(buffer, output);
-    }
+  output = fopen("objs.mif", "w");
 
+  if (output == NULL) {
     fclose(input);
-    fclose(output);
-    return EXIT_SUCCESS;
+    printf("objs.mif not writable\n");
+    return EXIT_FAILURE;
+  }
+
+  while (fgets(buffer, 30, input) != NULL) {
+    for (i = 0; i < 30; i++) if (buffer[i] == '\\') buffer[i] = '&';
+    fputs(buffer, output);
+  }
+
+  fclose(input);
+  fclose(output);
+  return EXIT_SUCCESS;
 }
+

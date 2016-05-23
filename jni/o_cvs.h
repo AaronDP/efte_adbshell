@@ -14,38 +14,56 @@
 #ifndef CVS_H_
 #define CVS_H_
 
-class ECvs: public ECvsBase {
+class ECvs : public ECvsBase {
 public:
-    char *LogFile;
-    int Commiting;
 
-    ECvs(int createFlags, EModel **ARoot, const char *Dir, const char *ACommand, const char *AOnFiles);
-    ECvs(int createFlags, EModel **ARoot);
-    ~ECvs();
+  char *LogFile;
+  int   Commiting;
 
-    void RemoveLogFile();
-    // Return marked files in allocated space separated list
-    char *MarkedAsList();
-    // Return CVS status char of file or 0 if unknown
-    // (if char is lowercase, state was guessed from last command invoked upon file)
-    char GetFileStatus(const char *file);
+  ECvs(int         createFlags,
+       EModel    **ARoot,
+       const char *Dir,
+       const char *ACommand,
+       const char *AOnFiles);
+  ECvs(int      createFlags,
+       EModel **ARoot);
+  ~ECvs();
 
-    virtual void ParseLine(const char *line, int len);
-    // Returns 0 if OK
-    virtual int RunPipe(const char *Dir, const char *Command, const char *OnFiles);
-    virtual void ClosePipe();
-    // Start commit process (opens message buffer), returns 0 if OK
-    int RunCommit(const char *Dir, const char *Command, const char *OnFiles);
-    // Finish commit process (called on message buffer close), returns 0 if OK
-    int DoneCommit(int commit);
+  void  RemoveLogFile();
 
-    virtual int CanQuit() const;
-    virtual int ConfQuit(GxView *V, int multiFile);
+  // Return marked files in allocated space separated list
+  char* MarkedAsList();
 
-    virtual int GetContext() const;
-    virtual EEventMap *GetEventMap();
+  // Return CVS status char of file or 0 if unknown
+  // (if char is lowercase, state was guessed from last command invoked upon
+  // file)
+  char         GetFileStatus(const char *file);
+
+  virtual void ParseLine(const char *line,
+                         int         len);
+
+  // Returns 0 if OK
+  virtual int  RunPipe(const char *Dir,
+                       const char *Command,
+                       const char *OnFiles);
+  virtual void ClosePipe();
+
+  // Start commit process (opens message buffer), returns 0 if OK
+  int          RunCommit(const char *Dir,
+                         const char *Command,
+                         const char *OnFiles);
+
+  // Finish commit process (called on message buffer close), returns 0 if OK
+  int                DoneCommit(int commit);
+
+  virtual int        CanQuit() const;
+  virtual int        ConfQuit(GxView *V,
+                              int     multiFile);
+
+  virtual int        GetContext() const;
+  virtual EEventMap* GetEventMap();
 };
 
 extern ECvs *CvsView;
 
-#endif
+#endif // ifndef CVS_H_

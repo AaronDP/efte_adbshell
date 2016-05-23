@@ -13,17 +13,17 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif // ifdef __cplusplus
 
-    typedef struct {
-        unsigned long fLen;
-        char *fChar;
-    } ClipData;
+typedef struct {
+  unsigned long fLen;
+  char         *fChar;
+} ClipData;
 
-    int GetClipText(ClipData *cd);
-    int PutClipText(ClipData *cd);
+int GetClipText(ClipData *cd);
+int PutClipText(ClipData *cd);
 
 #ifdef __cplusplus
 }
-#endif
-#endif
+#endif // ifdef __cplusplus
+#endif // ifndef CLIPLIB_H_

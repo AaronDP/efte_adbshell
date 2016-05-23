@@ -11,18 +11,26 @@
 #ifndef S_STRING_H_
 #define S_STRING_H_
 
-int UnTabStr(char *dest, int maxlen, const char *source, int slen);
+int UnTabStr(char       *dest,
+             int         maxlen,
+             const char *source,
+             int         slen);
 
 #if !defined(HAVE_STRLCPY)
-size_t strlcpy(char *dst, const char *src, size_t size);
+size_t strlcpy(char       *dst,
+               const char *src,
+               size_t      size);
 #endif // !HAVE_STRLCPY
 
 #if !defined(HAVE_STRLCAT)
-size_t strlcat(char *dst, const char *src, size_t size);
+size_t strlcat(char       *dst,
+               const char *src,
+               size_t      size);
 #endif // !HAVE_STRLCAT
 
 #if !defined(HAVE_STRICMP)
-int stricmp(const char *a, const char *b);
-#endif
+int stricmp(const char *a,
+            const char *b);
+#endif // if !defined(HAVE_STRICMP)
 
-#endif
+#endif // ifndef S_STRING_H_

@@ -27,80 +27,96 @@
 #define CMD_PUT  2
 
 static HMTX hmtxSyn;
-static HEV hevGet;
-static HEV hevPut;
-static HEV hevEnd;
+static HEV  hevGet;
+static HEV  hevPut;
+static HEV  hevEnd;
 
 int GetClipText(ClipData *cd) {
-    int rc;
-    ULONG PostCount;
-    char *mem;
+  int   rc;
+  ULONG PostCount;
+  char *mem;
 
-    rc = DosOpenMutexSem(SEM_PREFIX "CLIPSYN", &hmtxSyn);
-    if (rc != 0) return -1;
-    rc = DosOpenEventSem(SEM_PREFIX "CLIPGET", &hevGet);
-    if (rc != 0) return -1;
-    /*    rc = DosOpenEventSem(SEM_PREFIX "CLIPPUT", &hevPut);*/
-    /*    if (rc != 0) return -1;*/
-    rc = DosOpenEventSem(SEM_PREFIX "CLIPEND", &hevEnd);
-    if (rc != 0) return -1;
+  rc = DosOpenMutexSem(SEM_PREFIX "CLIPSYN", &hmtxSyn);
 
-    DosRequestMutexSem(hmtxSyn, SEM_INDEFINITE_WAIT);
-    DosResetEventSem(hevEnd, &PostCount);
-    DosPostEventSem(hevGet);
-    DosWaitEventSem(hevEnd, SEM_INDEFINITE_WAIT);
-    if (0 == DosGetNamedSharedMem((void **)&mem, MEM_PREFIX "CLIPDATA", PAG_READ | PAG_WRITE)) {
-        cd->fLen = *(ULONG*)mem;
-        cd->fChar = strdup(mem + 4);
-        DosFreeMem(mem);
-    } else {
-        cd->fLen = 0;
-        cd->fChar = 0;
-    }
-    DosPostEventSem(hevGet);
-    DosReleaseMutexSem(hmtxSyn);
-    /*    DosCloseEventSem(hevPut);*/
-    DosCloseEventSem(hevGet);
-    DosCloseEventSem(hevEnd);
-    DosCloseMutexSem(hmtxSyn);
-    return 0;
+  if (rc != 0) return -1;
+
+  rc = DosOpenEventSem(SEM_PREFIX "CLIPGET", &hevGet);
+
+  if (rc != 0) return -1;
+
+  /*    rc = DosOpenEventSem(SEM_PREFIX "CLIPPUT", &hevPut);*/
+  /*    if (rc != 0) return -1;*/
+  rc = DosOpenEventSem(SEM_PREFIX "CLIPEND", &hevEnd);
+
+  if (rc != 0) return -1;
+
+  DosRequestMutexSem(hmtxSyn, SEM_INDEFINITE_WAIT);
+  DosResetEventSem(hevEnd, &PostCount);
+  DosPostEventSem(hevGet);
+  DosWaitEventSem(hevEnd, SEM_INDEFINITE_WAIT);
+
+  if (0 ==
+      DosGetNamedSharedMem((void **)&mem, MEM_PREFIX "CLIPDATA", PAG_READ |
+                           PAG_WRITE)) {
+    cd->fLen  = *(ULONG *)mem;
+    cd->fChar = strdup(mem + 4);
+    DosFreeMem(mem);
+  } else {
+    cd->fLen  = 0;
+    cd->fChar = 0;
+  }
+  DosPostEventSem(hevGet);
+  DosReleaseMutexSem(hmtxSyn);
+
+  /*    DosCloseEventSem(hevPut);*/
+  DosCloseEventSem(hevGet);
+  DosCloseEventSem(hevEnd);
+  DosCloseMutexSem(hmtxSyn);
+  return 0;
 }
 
 int PutClipText(ClipData *cd) {
-    int rc;
-    ULONG PostCount;
-    char *mem;
+  int   rc;
+  ULONG PostCount;
+  char *mem;
 
-    rc = DosOpenMutexSem(SEM_PREFIX "CLIPSYN", &hmtxSyn);
-    if (rc != 0) return -1;
-    /*    rc = DosOpenEventSem(SEM_PREFIX "CLIPGET", &hevGet);*/
-    /*    if (rc != 0) return -1;*/
-    rc = DosOpenEventSem(SEM_PREFIX "CLIPPUT", &hevPut);
-    if (rc != 0) return -1;
-    rc = DosOpenEventSem(SEM_PREFIX "CLIPEND", &hevEnd);
-    if (rc != 0) return -1;
+  rc = DosOpenMutexSem(SEM_PREFIX "CLIPSYN", &hmtxSyn);
 
-    DosRequestMutexSem(hmtxSyn, SEM_INDEFINITE_WAIT);
-    DosResetEventSem(hevEnd, &PostCount);
-    if (0 == DosAllocSharedMem((void **)&mem,
-                               MEM_PREFIX "CLIPDATA",
-                               cd->fLen + 5,
-                               PAG_COMMIT | PAG_READ | PAG_WRITE)) {
-        ULONG L = cd->fLen;
-        memcpy((void *)mem, (void *)&L, 4);
-        strcpy(mem + 4, cd->fChar);
-    }
-    DosPostEventSem(hevPut);
-    DosWaitEventSem(hevEnd, SEM_INDEFINITE_WAIT);
-    DosPostEventSem(hevPut);
-    DosReleaseMutexSem(hmtxSyn);
-    DosCloseEventSem(hevPut);
-    /*    DosCloseEventSem(hevGet); */
-    DosCloseEventSem(hevEnd);
-    DosCloseMutexSem(hmtxSyn);
-    if (mem)
-        DosFreeMem(mem);
-    return 0;
+  if (rc != 0) return -1;
 
+  /*    rc = DosOpenEventSem(SEM_PREFIX "CLIPGET", &hevGet);*/
+  /*    if (rc != 0) return -1;*/
+  rc = DosOpenEventSem(SEM_PREFIX "CLIPPUT", &hevPut);
+
+  if (rc != 0) return -1;
+
+  rc = DosOpenEventSem(SEM_PREFIX "CLIPEND", &hevEnd);
+
+  if (rc != 0) return -1;
+
+  DosRequestMutexSem(hmtxSyn, SEM_INDEFINITE_WAIT);
+  DosResetEventSem(hevEnd, &PostCount);
+
+  if (0 == DosAllocSharedMem((void **)&mem,
+                             MEM_PREFIX "CLIPDATA",
+                             cd->fLen + 5,
+                             PAG_COMMIT | PAG_READ | PAG_WRITE)) {
+    ULONG L = cd->fLen;
+    memcpy((void *)mem, (void *)&L, 4);
+    strcpy(mem + 4, cd->fChar);
+  }
+  DosPostEventSem(hevPut);
+  DosWaitEventSem(hevEnd, SEM_INDEFINITE_WAIT);
+  DosPostEventSem(hevPut);
+  DosReleaseMutexSem(hmtxSyn);
+  DosCloseEventSem(hevPut);
+
+  /*    DosCloseEventSem(hevGet); */
+  DosCloseEventSem(hevEnd);
+  DosCloseMutexSem(hmtxSyn);
+
+  if (mem) DosFreeMem(mem);
+  return 0;
 }
-#endif
+
+#endif // if !defined(__ANDROID__)

@@ -5,4 +5,4 @@
 
 #define EFTE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}"
 
-#endif
+#endif // ifndef __CONFIG_H__

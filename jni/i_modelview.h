@@ -13,29 +13,32 @@
 
 class EView;
 
-class ExModelView: public ExView {
+class ExModelView : public ExView {
 public:
-    EView *View;
-    int MouseCaptured;
-    int MouseMoved;
 
-    ExModelView(EView *AView);
-    virtual ~ExModelView();
-    virtual void Activate(int gotfocus);
+  EView *View;
+  int    MouseCaptured;
+  int    MouseMoved;
 
-    virtual EEventMap *GetEventMap();
-    virtual int ExecCommand(int Command, ExState &State);
+  ExModelView(EView *AView);
+  virtual ~ExModelView();
+  virtual void       Activate(int gotfocus);
 
-    virtual int GetContext() const;
-    virtual int BeginMacro();
-    virtual void HandleEvent(TEvent &Event);
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
-    virtual void Resize(int width, int height);
-    virtual void WnSwitchBuffer(EModel *M);
-    virtual int IsModelView() const;
+  virtual EEventMap* GetEventMap();
+  virtual int        ExecCommand(int      Command,
+                                 ExState& State);
+
+  virtual int        GetContext() const;
+  virtual int        BeginMacro();
+  virtual void       HandleEvent(TEvent& Event);
+  virtual void       UpdateView();
+  virtual void       RepaintView();
+  virtual void       UpdateStatus();
+  virtual void       RepaintStatus();
+  virtual void       Resize(int width,
+                            int height);
+  virtual void       WnSwitchBuffer(EModel *M);
+  virtual int        IsModelView() const;
 };
 
-#endif
+#endif // ifndef EXEDIT_H_

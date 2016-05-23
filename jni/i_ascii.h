@@ -11,21 +11,22 @@
 #ifndef EXASCII_H_
 #define EXASCII_H_
 
-class ExASCII: public ExView {
+class ExASCII : public ExView {
 public:
-    int Pos, LPos;
 
-    ExASCII();
-    virtual ~ExASCII();
-    virtual void Activate(int gotfocus);
+  int Pos, LPos;
 
-    virtual ExView* GetViewContext();
-    virtual int BeginMacro();
-    virtual void HandleEvent(TEvent &Event);
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
+  ExASCII();
+  virtual ~ExASCII();
+  virtual void    Activate(int gotfocus);
+
+  virtual ExView* GetViewContext();
+  virtual int     BeginMacro();
+  virtual void    HandleEvent(TEvent& Event);
+  virtual void    UpdateView();
+  virtual void    RepaintView();
+  virtual void    UpdateStatus();
+  virtual void    RepaintStatus();
 };
 
-#endif
+#endif // ifndef EXASCII_H_

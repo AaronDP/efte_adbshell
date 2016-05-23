@@ -30,7 +30,7 @@ extern ChColor hcEntry_Field;
 extern ChColor hcEntry_Prompt;
 extern ChColor hcEntry_Selection;
 
-//extern ChColor hcList_Border;
+// extern ChColor hcList_Border;
 extern ChColor hcList_Status;
 extern ChColor hcList_Normal;
 extern ChColor hcList_Selected;
@@ -63,6 +63,7 @@ extern ChColor hcChoice_NormalChar;
 
 extern ChColor MsgColor[3];
 
-int SetColor(const char *ColorV, const char *Value);
+int SetColor(const char *ColorV,
+             const char *Value);
 
-#endif
+#endif // ifndef COLOR_H_

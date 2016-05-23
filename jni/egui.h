@@ -12,7 +12,7 @@
 #define EGUI_H_
 
 #include "gui.h"
-#include "c_bind.h"  // KeySel
+#include "c_bind.h" // KeySel
 
 class EEventMap;
 class EKeyMap;
@@ -20,83 +20,115 @@ class GxView;
 class ExState;
 class EView;
 
-class EFrame: public GFrame {
+class EFrame : public GFrame {
 public:
-    EEventMap *CMap;
-    EModel *CModel;
 
-    EFrame(int XSize, int YSize);
-    virtual ~EFrame();
+  EEventMap *CMap;
+  EModel    *CModel;
 
-    virtual void Update();
-    virtual void UpdateMenu();
+  EFrame(int XSize,
+         int YSize);
+  virtual ~EFrame();
+
+  virtual void Update();
+  virtual void UpdateMenu();
 };
 
-class EGUI: public GUI {
+class EGUI : public GUI {
 public:
-    EKeyMap *ActiveMap;
-    EKeyMap *OverrideMap;
-    char CharMap[32];
 
-    EGUI(int &argc, char **argv, int XSize, int YSize);
-    virtual ~EGUI();
+  EKeyMap *ActiveMap;
+  EKeyMap *OverrideMap;
+  char     CharMap[32];
 
-    virtual int ExecCommand(GxView *view, int Command, ExState &State);
-    virtual int ExecMacro(GxView *view, int Macro);
-    virtual int BeginMacro(GxView *view);
+  EGUI(int  & argc,
+       char **argv,
+       int    XSize,
+       int    YSize);
+  virtual ~EGUI();
 
-    void SetMsg(const char *Msg);
-    void SetOverrideMap(EKeyMap *aMap, const char *ModeName);
-    void SetMap(EKeyMap *aMap, KeySel *ks);
-//    void CharEvent(TEvent &Event, char Ch);
+  virtual int ExecCommand(GxView  *view,
+                          int      Command,
+                          ExState& State);
+  virtual int ExecMacro(GxView *view,
+                        int     Macro);
+  virtual int BeginMacro(GxView *view);
 
-    void DispatchKey(GxView *view, TEvent &Event);
-    void DispatchCommand(GxView *view, TEvent &Event);
+  void        SetMsg(const char *Msg);
+  void        SetOverrideMap(EKeyMap    *aMap,
+                             const char *ModeName);
+  void        SetMap(EKeyMap *aMap,
+                     KeySel  *ks);
 
-    virtual void DispatchEvent(GFrame *frame, GView *view, TEvent &Event);
+  //    void CharEvent(TEvent &Event, char Ch);
 
-    int FileCloseX(EView *View, int CreateNew, int XClose = 0);
-    int FileClose(EView *View, ExState &State);
-    int FileCloseAll(EView *View, ExState &State);
+  void         DispatchKey(GxView *view,
+                           TEvent& Event);
+  void         DispatchCommand(GxView *view,
+                               TEvent& Event);
 
-    int WinNext(GxView *view);
-    int WinPrev(GxView *view);
+  virtual void DispatchEvent(GFrame *frame,
+                             GView  *view,
+                             TEvent& Event);
 
-    int WinHSplit(GxView *View);
-    int WinClose(GxView *View);
-    int WinZoom(GxView *View);
-    int WinResize(ExState &State, GxView *View);
-    int ExitEditor(EView *View);
+  int FileCloseX(EView *View,
+                 int    CreateNew,
+                 int    XClose = 0);
+  int FileClose(EView   *View,
+                ExState& State);
+  int FileCloseAll(EView   *View,
+                   ExState& State);
 
-    int FrameNew();
-    int FrameClose(GxView *View);
-    int FrameNext(GxView *View);
-    int FramePrev(GxView *View);
+  int WinNext(GxView *view);
+  int WinPrev(GxView *view);
 
-    int ShowEntryScreen();
-    int RunProgram(ExState &State, GxView *view);
-    int RunProgramAsync(ExState &State, GxView *view);
+  int WinHSplit(GxView *View);
+  int WinClose(GxView *View);
+  int WinZoom(GxView *View);
+  int WinResize(ExState& State,
+                GxView  *View);
+  int ExitEditor(EView *View);
 
-    int MainMenu(ExState &State, GxView *View);
-    int ShowMenu(ExState &State, GxView *View);
-    int LocalMenu(GxView *View);
+  int FrameNew();
+  int FrameClose(GxView *View);
+  int FrameNext(GxView *View);
+  int FramePrev(GxView *View);
 
-    int DesktopSaveAs(ExState &State, GxView *View);
-    int DesktopLoad(ExState &State, GxView *View);
+  int ShowEntryScreen();
+  int RunProgram(ExState& State,
+                 GxView  *view);
+  int RunProgramAsync(ExState& State,
+                      GxView  *view);
 
-    int FindDesktop(char *argv[]);
-    void DoLoadDesktopOnEntry(int &argc, char **argv);
-    void EditorInit();
-    int CmdLoadFiles(int &argc, char **argv);
-    int InterfaceInit(int &argc, char **argv);
-    void DoLoadHistoryOnEntry(int &argc, char **argv);
-    void DoSaveHistoryOnExit();
+  int MainMenu(ExState& State,
+               GxView  *View);
+  int ShowMenu(ExState& State,
+               GxView  *View);
+  int LocalMenu(GxView *View);
 
-    void EditorCleanup();
-    void InterfaceCleanup();
+  int DesktopSaveAs(ExState& State,
+                    GxView  *View);
+  int DesktopLoad(ExState& State,
+                  GxView  *View);
 
-    virtual int Start(int &argc, char **argv);
-    virtual void Stop();
+  int FindDesktop(char *argv[]);
+  void         DoLoadDesktopOnEntry(int  & argc,
+                                    char **argv);
+  void         EditorInit();
+  int          CmdLoadFiles(int  & argc,
+                            char **argv);
+  int          InterfaceInit(int  & argc,
+                             char **argv);
+  void         DoLoadHistoryOnEntry(int  & argc,
+                                    char **argv);
+  void         DoSaveHistoryOnExit();
+
+  void         EditorCleanup();
+  void         InterfaceCleanup();
+
+  virtual int  Start(int  & argc,
+                     char **argv);
+  virtual void Stop();
 };
 
-#endif
+#endif // ifndef EGUI_H_

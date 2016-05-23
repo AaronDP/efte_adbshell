@@ -13,51 +13,72 @@
 
 class EView;
 
-class GxView: public GView {
+class GxView : public GView {
 public:
-    ExView *Top;
-    ExView *Bottom;
-    int MouseCaptured;
 
-    GxView(GFrame *Parent);
-    virtual ~GxView();
+  ExView *Top;
+  ExView *Bottom;
+  int     MouseCaptured;
 
-    void PushView(ExView *view);
-    ExView *PopView();
-    void NewView(ExView *view);
+  GxView(GFrame *Parent);
+  virtual ~GxView();
 
-    EEventMap *GetEventMap();
-    int ExecCommand(int Command, ExState &State);
+  void            PushView(ExView *view);
+  ExView*         PopView();
+  void            NewView(ExView *view);
 
-    virtual int GetContext() const;
-    virtual ExView* GetStatusContext() {
-        if (Top) return Top->GetStatusContext();
-        else return 0;
-    }
-    virtual ExView* GetViewContext() {
-        if (Top) return Top->GetViewContext();
-        else return 0;
-    }
-    virtual int BeginMacro();
-    virtual void HandleEvent(TEvent &Event);
-    virtual void Update();
-    virtual void Repaint();
-    virtual void Activate(int gotfocus);
-    virtual void Resize(int width, int height);
+  EEventMap*      GetEventMap();
+  int             ExecCommand(int      Command,
+                              ExState& State);
 
-    void UpdateTitle(const char *Title, char *STitle);
+  virtual int     GetContext() const;
+  virtual ExView* GetStatusContext() {
+    if (Top) return Top->GetStatusContext();
+    else return 0;
+  }
 
-    int ReadStr(const char *Prompt, unsigned int BufLen, char *Str, Completer Comp, int Select, int HistId);
-    int Choice(unsigned long Flags, const char *Title, int NSel, ... /* choices, format, args */);
-    TKeyCode GetChar(const char *Prompt);
-    int IncrementalSearch(EView *V);
-    int PickASCII();
-    int ICompleteWord(EView *View);
+  virtual ExView* GetViewContext() {
+    if (Top) return Top->GetViewContext();
+    else return 0;
+  }
 
-    int GetStr(const char *Prompt, unsigned int BufLen, char *Str, int HistId);
-    int GetFile(const char *Prompt, unsigned int BufLen, char *Str, int HistId, int Flags);
+  virtual int  BeginMacro();
+  virtual void HandleEvent(TEvent& Event);
+  virtual void Update();
+  virtual void Repaint();
+  virtual void Activate(int gotfocus);
+  virtual void Resize(int width,
+                      int height);
 
-    int IsModelView() const;
+  void         UpdateTitle(const char *Title,
+                           char       *STitle);
+
+  int          ReadStr(const char  *Prompt,
+                       unsigned int BufLen,
+                       char        *Str,
+                       Completer    Comp,
+                       int          Select,
+                       int          HistId);
+  int Choice(unsigned long Flags,
+             const char   *Title,
+             int           NSel,
+             ... /* choices, format, args */);
+  TKeyCode GetChar(const char *Prompt);
+  int      IncrementalSearch(EView *V);
+  int      PickASCII();
+  int      ICompleteWord(EView *View);
+
+  int      GetStr(const char  *Prompt,
+                  unsigned int BufLen,
+                  char        *Str,
+                  int          HistId);
+  int GetFile(const char  *Prompt,
+              unsigned int BufLen,
+              char        *Str,
+              int          HistId,
+              int          Flags);
+
+  int IsModelView() const;
 };
 
-#endif
+#endif // ifndef I_VIEW_H_

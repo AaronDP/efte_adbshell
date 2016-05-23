@@ -11,7 +11,7 @@
 #ifndef EMODE_H_
 #define EMODE_H_
 
-#define CMD_EXT 0x1000  // max 4096 internal commands, check cfte.cpp
+#define CMD_EXT 0x1000 // max 4096 internal commands, check cfte.cpp
 
 #define CONTEXT_NONE      0
 #define CONTEXT_FILE      1
@@ -32,7 +32,7 @@
 #define CONTEXT_SVN      16
 #define CONTEXT_SVNDIFF  17
 
-//typedef unsigned char ChColor;
+// typedef unsigned char ChColor;
 typedef int ChColor;
 
 #define HILIT_PLAIN   0
@@ -131,23 +131,26 @@ typedef int ChColor;
 #define BFS_WordChars           (100 | 256) // ext
 #define BFS_CapitalChars        (101 | 256)
 
-#define BFI(y,x) ((y)->Flags.num[(x) & 0xFF])
-#define BFI_SET(y,x,v) ((y)->Flags.num[(x) & 0xFF]=(v))
-#define BFS(y,x) ((y)->Flags.str[(x) & 0xFF])
+#define BFI(y, x) ((y)->Flags.num[(x) & 0xFF])
+#define BFI_SET(y, x, v) ((y)->Flags.num[(x) & 0xFF] = (v))
+#define BFS(y, x) ((y)->Flags.str[(x) & 0xFF])
 
-#define WSETBIT(x,y,z) \
-    ((x)[(unsigned char)(y) >> 3] = char((z) ? \
-    ((x)[(unsigned char)(y) >> 3] |  (1 << ((unsigned char)(y) & 0x7))) : \
-    ((x)[(unsigned char)(y) >> 3] & ~(1 << ((unsigned char)(y) & 0x7)))))
+#define WSETBIT(x, y, z)                                                     \
+  ((x)[(unsigned char)(y) >> 3] = char((z) ?                                 \
+                                       ((x)[(unsigned char)(y) >>            \
+                                            3] |                             \
+                                        (1 << ((unsigned char)(y) & 0x7))) : \
+                                       ((x)[(unsigned char)(y) >>            \
+                                            3] & ~(1 << ((unsigned char)(y) & 0x7)))))
 
-#define WGETBIT(x,y) \
-    (((x)[(unsigned char)(y) / 8] &  (1 << ((unsigned char)(y) % 8))) ? 1 : 0)
+#define WGETBIT(x, y) \
+  (((x)[(unsigned char)(y) / 8] &  (1 << ((unsigned char)(y) % 8))) ? 1 : 0)
 
 typedef struct {
-    int num[BFI_COUNT];
-    char *str[BFS_COUNT];
-    char WordChars[32];
-    char CapitalChars[32];
+  int   num[BFI_COUNT];
+  char *str[BFS_COUNT];
+  char  WordChars[32];
+  char  CapitalChars[32];
 } EBufferFlags;
 
 extern EBufferFlags DefaultBufferFlags;
@@ -230,6 +233,7 @@ extern EBufferFlags DefaultBufferFlags;
 #define CLR_Quotes         7
 #define CLR_Number         8
 #define CLR_HexNumber      9
+
 // for now, hex and octal shall have the same color
 // because octal isn't defined in most config files
 // and defaults to black
@@ -275,28 +279,28 @@ extern EBufferFlags DefaultBufferFlags;
 #define STATE_NOGRAB       0x0004
 
 typedef enum {
-    mvFilePath = 1,  /* directory + name + extension */
-    mvFileName,      /* name + extension */
-    mvFileDirectory, /* directory + '/' */
-    mvFileBaseName,  /* without the last extension */
-    mvFileExtension, /* the last one */
-    mvCurDirectory,
-    mvCurRow,
-    mvCurCol,
-    mvChar,
-    mvWord,
-    mvLine,
-    mvFTEVer,
-    mvGet0,
-    mvGet1,
-    mvGet2,
-    mvGet3,
-    mvGet4,
-    mvGet5,
-    mvGet6,
-    mvGet7,
-    mvGet8,
-    mvGet9
+  mvFilePath = 1,  /* directory + name + extension */
+  mvFileName,      /* name + extension */
+  mvFileDirectory, /* directory + '/' */
+  mvFileBaseName,  /* without the last extension */
+  mvFileExtension, /* the last one */
+  mvCurDirectory,
+  mvCurRow,
+  mvCurCol,
+  mvChar,
+  mvWord,
+  mvLine,
+  mvFTEVer,
+  mvGet0,
+  mvGet1,
+  mvGet2,
+  mvGet3,
+  mvGet4,
+  mvGet5,
+  mvGet6,
+  mvGet7,
+  mvGet8,
+  mvGet9
 } MacroVariable;
 
-#endif
+#endif // ifndef EMODE_H_

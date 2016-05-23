@@ -11,16 +11,17 @@
 #include "fte.h"
 
 int Indent_Continue(EBuffer *B, int Line, int /*PosCursor*/) {
-    // Find the previous non-blank line
-    for (int i = Line - 1; i >= 0; i--) {
-        if (B->RLine(i)->Count > 0) {
-            int I = B->LineIndented(i);
-            B->SetPosR(I, Line);
-            return 1;
-        }
+  // Find the previous non-blank line
+  for (int i = Line - 1; i >= 0; i--) {
+    if (B->RLine(i)->Count > 0) {
+      int I = B->LineIndented(i);
+      B->SetPosR(I, Line);
+      return 1;
     }
+  }
 
-    B->SetPosR(0, Line);
+  B->SetPosR(0, Line);
 
-    return 1;
+  return 1;
 }
+

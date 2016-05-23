@@ -1,4 +1,5 @@
 // so that we can reuse these numbers for other modes that re-use the C
+
 // indent functions.
 
 #define hsC_Normal       0

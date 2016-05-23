@@ -13,46 +13,49 @@
 
 #define INCL_WIN
 #if !defined(__ANDROID__)
-#include <os2.h>
-#include <string.h>
-#include <stdlib.h>
+# include <os2.h>
+# include <string.h>
+# include <stdlib.h>
 
 extern HAB hab;
 
 int GetClipText(ClipData *cd) {
-    char *text;
+  char *text;
 
-    cd->fLen = 0;
-    cd->fChar = 0;
-    if ((WinOpenClipbrd(hab) == TRUE) &&
-            ((text = (char *) WinQueryClipbrdData(hab, CF_TEXT)) != 0)) {
-        cd->fLen = strlen(text);
-        cd->fChar = strdup(text);
-    }
-    WinCloseClipbrd(hab);
-    return 0;
+  cd->fLen  = 0;
+  cd->fChar = 0;
+
+  if ((WinOpenClipbrd(hab) == TRUE) &&
+      ((text = (char *)WinQueryClipbrdData(hab, CF_TEXT)) != 0)) {
+    cd->fLen  = strlen(text);
+    cd->fChar = strdup(text);
+  }
+  WinCloseClipbrd(hab);
+  return 0;
 }
 
 int PutClipText(ClipData *cd) {
-    ULONG len;
-    void *text;
+  ULONG len;
+  void *text;
 
-    if (WinOpenClipbrd(hab) == TRUE) {
-        WinEmptyClipbrd(hab);
-        len = cd->fLen;
+  if (WinOpenClipbrd(hab) == TRUE) {
+    WinEmptyClipbrd(hab);
+    len = cd->fLen;
 
-        if (len) {
-            DosAllocSharedMem((void **)&text,
-                              0,
-                              len + 1,
-                              PAG_READ | PAG_WRITE | PAG_COMMIT | OBJ_GIVEABLE);
-            strncpy((char *)text, cd->fChar, len + 1);
-            if (!WinSetClipbrdData(hab, (ULONG) text, CF_TEXT, CFI_POINTER))
-                DosBeep(100, 1500);
+    if (len) {
+      DosAllocSharedMem((void **)&text,
+                        0,
+                        len + 1,
+                        PAG_READ | PAG_WRITE | PAG_COMMIT | OBJ_GIVEABLE);
+      strncpy((char *)text, cd->fChar, len + 1);
 
-        }
-        WinCloseClipbrd(hab);
+      if (!WinSetClipbrdData(hab, (ULONG)text, CF_TEXT, CFI_POINTER)) DosBeep(
+          100,
+          1500);
     }
-    return 0;
+    WinCloseClipbrd(hab);
+  }
+  return 0;
 }
-#endif
+
+#endif // if !defined(__ANDROID__)

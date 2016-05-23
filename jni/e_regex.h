@@ -83,30 +83,45 @@
 
 #define NSEXPS            64  // for replace only 0-9
 
-#define RX_CASE         1  // matchcase
+#define RX_CASE         1     // matchcase
 
 typedef struct _RxNode RxNode;
 
 struct _RxNode {
-    short fWhat;
-    short fLen;
-    RxNode *fPrev;
-    RxNode *fNext;
-    union {
-        char *fChar;
-        RxNode *fPtr;
-    };
+  short   fWhat;
+  short   fLen;
+  RxNode *fPrev;
+  RxNode *fNext;
+  union {
+    char   *fChar;
+    RxNode *fPtr;
+  };
 };
 
 typedef struct {
-    int Open[NSEXPS];    // -1 = not matched
-    int Close[NSEXPS];
+  int Open[NSEXPS]; // -1 = not matched
+  int Close[NSEXPS];
 } RxMatchRes;
 
-RxNode *RxCompile(const char *Regexp);
-int RxExecMatch(RxNode *Regexp, const char *Data, int Len, const char *Start, RxMatchRes *Match, unsigned int RxOpt = RX_CASE);
-int RxExec(RxNode *Regexp, const char *Data, int Len, const char *Start, RxMatchRes *Match, unsigned int RxOpt = RX_CASE);
-int RxReplace(const char *rep, const char *Src, int len, RxMatchRes match, char **Dest, int *Dlen);
+RxNode* RxCompile(const char *Regexp);
+int     RxExecMatch(RxNode      *Regexp,
+                    const char  *Data,
+                    int          Len,
+                    const char  *Start,
+                    RxMatchRes  *Match,
+                    unsigned int RxOpt = RX_CASE);
+int RxExec(RxNode      *Regexp,
+           const char  *Data,
+           int          Len,
+           const char  *Start,
+           RxMatchRes  *Match,
+           unsigned int RxOpt = RX_CASE);
+int RxReplace(const char *rep,
+              const char *Src,
+              int         len,
+              RxMatchRes  match,
+              char      **Dest,
+              int        *Dlen);
 void RxFree(RxNode *Node);
 
-#endif
+#endif // ifndef REGEX_H_

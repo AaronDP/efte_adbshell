@@ -16,35 +16,35 @@
 // maximum words which will be presented to the user
 #define MAXCOMPLETEWORDS 300
 
-class ExComplete: public ExView {
-    EPoint Orig;
-    EBuffer *Buffer;
-    int WordsLast;
-    char **Words;
-    char *WordBegin;
-    char *WordContinue;
-    int WordPos;
-    size_t WordFixed;
-    size_t WordFixedCount;
+class ExComplete : public ExView {
+  EPoint   Orig;
+  EBuffer *Buffer;
+  int WordsLast;
+  char **Words;
+  char  *WordBegin;
+  char  *WordContinue;
+  int    WordPos;
+  size_t WordFixed;
+  size_t WordFixedCount;
 
-    int RefreshComplete();
-    int CheckASCII(int c);
-    void FixedUpdate(int add);
+  int  RefreshComplete();
+  int  CheckASCII(int c);
+  void FixedUpdate(int add);
 
 public:
 
-    ExComplete(EBuffer *B);
-    virtual ~ExComplete();
-    virtual void Activate(int gotfocus);
-    virtual ExView* GetViewContext();
-    virtual int BeginMacro();
-    virtual void HandleEvent(TEvent &Event);
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
+  ExComplete(EBuffer *B);
+  virtual ~ExComplete();
+  virtual void    Activate(int gotfocus);
+  virtual ExView* GetViewContext();
+  virtual int     BeginMacro();
+  virtual void    HandleEvent(TEvent& Event);
+  virtual void    UpdateView();
+  virtual void    RepaintView();
+  virtual void    UpdateStatus();
+  virtual void    RepaintStatus();
 
-    virtual bool IsSimpleCase();
-    virtual int DoCompleteWord();
+  virtual bool    IsSimpleCase();
+  virtual int     DoCompleteWord();
 };
-#endif
+#endif // ifndef EXCOMPLETE_H_

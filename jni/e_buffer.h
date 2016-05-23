@@ -27,10 +27,10 @@ class EMode;
 #define bmStream  1
 #define bmColumn  2
 
-#define E_OK          0   // all ok
-#define E_CANCEL      1   // operation cancelled
-#define E_ERROR       2   // error
-#define E_NOMEM       3   // out of memory
+#define E_OK          0 // all ok
+#define E_CANCEL      1 // operation cancelled
+#define E_ERROR       2 // error
+#define E_NOMEM       3 // out of memory
 
 #define umDelete      0
 #define umInsert      1
@@ -47,665 +47,810 @@ typedef unsigned char TransTable[256];
 
 extern char FileBuffer[RWBUFSIZE];
 
-#define ChClass(x)  (WGETBIT(Flags.WordChars, (x)) ? 1 : 0)
+#define ChClass(x) (WGETBIT(Flags.WordChars, (x)) ? 1 : 0)
 #define ChClassK(x) (((x) == ' ' || (x) == 9) ? 2 : ChClass(x))
 
-#define InRange(a,x,b) (((a) <= (x)) && ((x) < (b)))
-#define Min(a,b) (((a) < (b))?(a):(b))
-#define Max(a,b) (((a) > (b))?(a):(b))
+#define InRange(a, x, b) (((a) <= (x)) && ((x) < (b)))
+#define Min(a, b) (((a) < (b)) ? (a) : (b))
+#define Max(a, b) (((a) > (b)) ? (a) : (b))
 
-#define NextTab(pos,ts) (((pos) / (ts) + 1) * (ts))
+#define NextTab(pos, ts) (((pos) / (ts) + 1) * (ts))
 
 // x before gap -> x
 // x less than count -> after gap
 // count - 1 before gap -> count - 1
 // after gap -> allocated - 1
-//#define GapLine(x,g,c,a) (((x) < (g)) ? (x) : (x) < (c) ? ((x) + (a) - (c)) : (c) - 1 < (g) ? (c) - 1 : (a) - 1 )
+// #define GapLine(x,g,c,a) (((x) < (g)) ? (x) : (x) < (c) ? ((x) + (a) - (c)) :
+// (c) - 1 < (g) ? (c) - 1 : (a) - 1 )
 // Use inline to make it easier to read/debug
 static inline int GapLine(int No, int Gap, int Count, int Allocated) {
-    int rc = -1;
-    if (No < Gap)
-        rc = No;
-    else if (No < Count)
-        rc = No + Allocated - Count;
-    else if (Count - 1 < Gap)
-        rc = Count - 1;
-    else
-        rc = Allocated - 1;
-    return rc;
+  int rc = -1;
+
+  if (No < Gap) rc = No;
+  else if (No < Count) rc = No + Allocated - Count;
+  else if (Count - 1 < Gap) rc = Count - 1;
+  else rc = Allocated - 1;
+  return rc;
 }
 
-
-typedef class ELine* PELine;
-typedef class EPoint* PEPoint;
+typedef class ELine  *PELine;
+typedef class EPoint *PEPoint;
 
 #define CHAR_TRESHOLD  0x3U
 
 class ELine {
 public:
-    int Count;
-    char *Chars;
-    hlState StateE;
-    int IndentContinuation;
 
-    ELine(int ACount, const char *AChars);
-    ELine(char *AChars, int ACount);
-    ~ELine();
-    int Allocate(unsigned int Bytes);
+  int     Count;
+  char   *Chars;
+  hlState StateE;
+  int     IndentContinuation;
 
-//    int Length(EBufferFlags *CurFlags);
+  ELine(int         ACount,
+        const char *AChars);
+  ELine(char *AChars,
+        int   ACount);
+  ~ELine();
+  int Allocate(unsigned int Bytes);
+
+  //    int Length(EBufferFlags *CurFlags);
 };
 
 class EPoint {
 public:
-    int Row;
-    int Col;
 
-//    EPoint(EPoint &M) { Row = M.Row; Col = M.Col; }
-    EPoint(int aRow = 0, int aCol = 0) {
-        Row = aRow;
-        Col = aCol;
-    }
-    ~EPoint() {}
+  int Row;
+  int Col;
+
+  //    EPoint(EPoint &M) { Row = M.Row; Col = M.Col; }
+  EPoint(int aRow = 0,
+         int aCol = 0) {
+    Row = aRow;
+    Col = aCol;
+  }
+
+  ~EPoint() {}
 };
 
 typedef struct _UndoStack {
-    int NextCmd, Record, Undo;
-    int UndoPtr;
-    int Num;
-    void **Data;
-    int *Top;
+  int    NextCmd, Record, Undo;
+  int    UndoPtr;
+  int    Num;
+  void **Data;
+  int   *Top;
 } UndoStack;
 
 class RoutineView;
 
 typedef struct _RoutineList {
-    int Count;
-    int *Lines;
+  int  Count;
+  int *Lines;
 } RoutineList;
 
 typedef struct _EBookmark {
-    char *Name;
-    EPoint BM;
+  char  *Name;
+  EPoint BM;
 } EBookmark;
 
 typedef struct {
-    int line;
-    unsigned char level;
-    unsigned char open;
-    unsigned short flags;
+  int            line;
+  unsigned char  level;
+  unsigned char  open;
+  unsigned short flags;
 } EFold;
 
-class EEditPort: public EViewPort {
+class EEditPort : public EViewPort {
 public:
-    EBuffer *Buffer;
-    EPoint TP, OldTP;
-    EPoint CP;
-    int Rows, Cols;
 
-    EEditPort(EBuffer *B, EView *V);
-    virtual ~EEditPort();
+  EBuffer *Buffer;
+  EPoint   TP, OldTP;
+  EPoint   CP;
+  int Rows, Cols;
 
-    virtual void HandleEvent(TEvent &Event);
-    virtual void HandleMouse(TEvent &Event);
-    virtual void UpdateView();
-    virtual void RepaintView();
-    virtual void UpdateStatus();
-    virtual void RepaintStatus();
+  EEditPort(EBuffer *B,
+            EView   *V);
+  virtual ~EEditPort();
 
-    virtual void Resize(int Width, int Height);
-    int SetTop(int Col, int Row);
-    virtual void GetPos();
-    virtual void StorePos();
-    void DrawLine(int L, TDrawBuffer B);
-    void ScrollY(int Delta);
-    void RedrawAll();
+  virtual void HandleEvent(TEvent& Event);
+  virtual void HandleMouse(TEvent& Event);
+  virtual void UpdateView();
+  virtual void RepaintView();
+  virtual void UpdateStatus();
+  virtual void RepaintStatus();
+
+  virtual void Resize(int Width,
+                      int Height);
+  int          SetTop(int Col,
+                      int Row);
+  virtual void GetPos();
+  virtual void StorePos();
+  void         DrawLine(int         L,
+                        TDrawBuffer B);
+  void         ScrollY(int Delta);
+  void         RedrawAll();
 };
 
-class EBuffer: public EModel {
+class EBuffer : public EModel {
 public:
-    char GetStrVars[10][50];
-    //char *Name;
-    char *FileName;
-    int Modified;
-    EPoint TP;
-    EPoint CP;
-    EPoint BB;
-    EPoint BE;
-    EPoint PrevPos;
-    EPoint SavedPos;
 
-    EBufferFlags Flags;
-    EMode *Mode;
-    int BlockMode;
-    int ExtendGrab;
-    int AutoExtend;
-    int Loaded;
+  char GetStrVars[10][50];
 
-    UndoStack US;
+  // char *Name;
+  char  *FileName;
+  int    Modified;
+  EPoint TP;
+  EPoint CP;
+  EPoint BB;
+  EPoint BE;
+  EPoint PrevPos;
+  EPoint SavedPos;
 
-    struct stat FileStatus;
-    int FileOk;
-    int Loading;
+  EBufferFlags Flags;
+  EMode *Mode;
+  int    BlockMode;
+  int    ExtendGrab;
+  int    AutoExtend;
+  int    Loaded;
 
-    int RAllocated;   // text line allocation
-    int RGap;
-    int RCount;
-    PELine *LL;
+  UndoStack US;
 
-    int VAllocated;   // visible lines
-    int VGap;
-    int VCount;
-    int *VV;
+  struct stat FileStatus;
+  int FileOk;
+  int Loading;
 
-    int FCount;
-    EFold *FF;
+  int RAllocated; // text line allocation
+  int RGap;
+  int RCount;
+  PELine *LL;
 
-    EPoint Match;
-    int MatchLen;
-    int MatchCount;
-    RxMatchRes MatchRes;
+  int  VAllocated; // visible lines
+  int  VGap;
+  int  VCount;
+  int *VV;
 
-    int BMCount;
-    EBookmark *BMarks;
+  int FCount;
+  EFold *FF;
 
-    RoutineList rlst;
-    RoutineView *Routines;
+  EPoint Match;
+  int    MatchLen;
+  int    MatchCount;
+  RxMatchRes MatchRes;
 
-    int MinRedraw, MaxRedraw;
-    int RedrawToEos;
+  int BMCount;
+  EBookmark *BMarks;
 
-    char **WordList;
-    int WordCount;
+  RoutineList  rlst;
+  RoutineView *Routines;
 
-    SyntaxProc HilitProc;
-    int StartHilit, EndHilit;
+  int MinRedraw, MaxRedraw;
+  int RedrawToEos;
 
-    int LastUpDownColumn; // For CursorWithinEOL movement
+  char **WordList;
+  int    WordCount;
 
-    // constructors
-    EBuffer(int createFlags, EModel **ARoot, const char *AName);
-    virtual ~EBuffer();
-    virtual void DeleteRelated();
+  SyntaxProc HilitProc;
+  int StartHilit, EndHilit;
 
-    virtual EViewPort *CreateViewPort(EView *V);
-    EEditPort *GetViewVPort(EView *V);
-    EEditPort *GetVPort();
-    virtual int CanQuit() const;
-    virtual int ConfQuit(GxView *V, int multiFile = 0);
+  int LastUpDownColumn; // For CursorWithinEOL movement
 
-    virtual int GetContext() const;
-    virtual EEventMap *GetEventMap();
-    virtual int BeginMacro();
-    virtual int ExecCommand(int Command, ExState &State);
-    virtual void HandleEvent(TEvent &Event);
+  // constructors
+  EBuffer(int         createFlags,
+          EModel    **ARoot,
+          const char *AName);
+  virtual ~EBuffer();
+  virtual void       DeleteRelated();
 
-    virtual void GetName(char *AName, int MaxLen) const;
-    virtual void GetPath(char *APath, int MaxLen) const;
-    virtual void GetInfo(char *AInfo, int MaxLen) const;
-    virtual void GetTitle(char *ATitle, int MaxLen, char *ASTitle, int SMaxLen) const;
+  virtual EViewPort* CreateViewPort(EView *V);
+  EEditPort*         GetViewVPort(EView *V);
+  EEditPort*         GetVPort();
+  virtual int        CanQuit() const;
+  virtual int        ConfQuit(GxView *V,
+                              int     multiFile = 0);
 
-    PELine RLine(int No) const;
-    void RLine(int No, PELine L);
-    int Vis(int No) const;
-    void Vis(int No, int V);
-    PELine VLine(int No) const;
-    void VLine(int No, PELine L);
+  virtual int        GetContext() const;
+  virtual EEventMap* GetEventMap();
+  virtual int        BeginMacro();
+  virtual int        ExecCommand(int      Command,
+                                 ExState& State);
+  virtual void       HandleEvent(TEvent& Event);
 
-    int VToR(int No) const;
+  virtual void       GetName(char *AName,
+                             int   MaxLen) const;
+  virtual void       GetPath(char *APath,
+                             int   MaxLen) const;
+  virtual void       GetInfo(char *AInfo,
+                             int   MaxLen) const;
+  virtual void       GetTitle(char *ATitle,
+                              int   MaxLen,
+                              char *ASTitle,
+                              int   SMaxLen) const;
 
-    int RToV(int No);
-    int RToVN(int No);
+  PELine RLine(int No) const;
+  void   RLine(int    No,
+               PELine L);
+  int    Vis(int No) const;
+  void   Vis(int No,
+             int V);
+  PELine VLine(int No) const;
+  void   VLine(int    No,
+               PELine L);
 
-    // allocation
-    int Allocate(int ACount);
-    int MoveRGap(int RPos);
-    int AllocVis(int ACount);
-    int MoveVGap(int VPos);
+  int    VToR(int No) const;
 
-    int Modify();
-    int Clear();
+  int    RToV(int No);
+  int    RToVN(int No);
 
-    int FreeUndo();
+  // allocation
+  int    Allocate(int ACount);
+  int    MoveRGap(int RPos);
+  int    AllocVis(int ACount);
+  int    MoveVGap(int VPos);
 
-    // internal primitives
-    int ValidPos(EPoint W);
-    int RValidPos(EPoint W);
-    int LoadRegion(EPoint *A, int FH, int StripChar, int LineChar);
-    int SaveRegion(EPoint *A, EPoint *Z, int FH, int AddCR, int AddLF, int Mode);
+  int    Modify();
+  int    Clear();
 
-    int AssertLine(int Line);
-    int InsertLine(EPoint Pos, int ACount, const char *AChars);
+  int    FreeUndo();
 
-    int UpdateMarker(int Type, int Line, int Col, int Lines, int Cols);
-    int UpdateMark(EPoint &M, int Type, int Line, int Col, int Lines, int Cols);
-    void UpdateVis(EPoint &M, int Row, int Delta);
-    void UpdateVisible(int Row, int Delta);
-    int LoadFrom(const char *AFileName);
-    int SaveTo(const char *AFileName);
+  // internal primitives
+  int    ValidPos(EPoint W);
+  int    RValidPos(EPoint W);
+  int    LoadRegion(EPoint *A,
+                    int     FH,
+                    int     StripChar,
+                    int     LineChar);
+  int SaveRegion(EPoint *A,
+                 EPoint *Z,
+                 int     FH,
+                 int     AddCR,
+                 int     AddLF,
+                 int     Mode);
 
-    int IsBlockStart() const;
-    int IsBlockEnd() const;
-    int BlockType(int Mode) const;
-    int BeginExtend();
-    int EndExtend();
-    int CheckBlock();
-    int BlockRedraw();
-    int SetBB(EPoint M);
-    int SetBE(EPoint M);
+  int AssertLine(int Line);
+  int InsertLine(EPoint      Pos,
+                 int         ACount,
+                 const char *AChars);
 
-    int Load();
-    int Save();
-    int Reload();
-    int FilePrint();
-    int SetFileName(const char *AFileName, const char *AMode);
+  int UpdateMarker(int Type,
+                   int Line,
+                   int Col,
+                   int Lines,
+                   int Cols);
+  int UpdateMark(EPoint& M,
+                 int     Type,
+                 int     Line,
+                 int     Col,
+                 int     Lines,
+                 int     Cols);
+  void UpdateVis(EPoint& M,
+                 int     Row,
+                 int     Delta);
+  void UpdateVisible(int Row,
+                     int Delta);
+  int  LoadFrom(const char *AFileName);
+  int  SaveTo(const char *AFileName);
 
-    int SetPos(int Col, int Row, int tabMode = tmNone);
-    int SetPosR(int Col, int Row, int tabMode = tmNone);
-    int CenterPos(int Col, int Row, int tabMode = tmNone);
-    int CenterPosR(int Col, int Row, int tabMode = tmNone);
-    int SetNearPos(int Col, int Row, int tabMode = tmNone);
-    int SetNearPosR(int Col, int Row, int tabMode = tmNone);
-    int CenterNearPos(int Col, int Row, int tabMode = tmNone);
-    int CenterNearPosR(int Col, int Row, int tabMode = tmNone);
-    int LineLen(int Row);
-    int LineChars(int Row);
+  int  IsBlockStart() const;
+  int  IsBlockEnd() const;
+  int  BlockType(int Mode) const;
+  int  BeginExtend();
+  int  EndExtend();
+  int  CheckBlock();
+  int  BlockRedraw();
+  int  SetBB(EPoint M);
+  int  SetBE(EPoint M);
 
-/////////////////////////////////////////////////////////////////////////////
-// Undo/Redo Routines
-/////////////////////////////////////////////////////////////////////////////
+  int  Load();
+  int  Save();
+  int  Reload();
+  int  FilePrint();
+  int  SetFileName(const char *AFileName,
+                   const char *AMode);
 
-    int NextCommand();
-    int PushUData(void *data, int len);
-    int PushULong(unsigned long l);
-    int PushUChar(unsigned char ch);
-    int PopUData(void *data, int len);
-    int GetUData(int No, int pos, void **data, int len);
-    int Undo(int undo);
-    int Undo();
-    int Redo();
-    int BeginUndo();
-    int EndUndo();
-    int PushBlockData();
+  int  SetPos(int Col,
+              int Row,
+              int tabMode = tmNone);
+  int  SetPosR(int Col,
+               int Row,
+               int tabMode = tmNone);
+  int  CenterPos(int Col,
+                 int Row,
+                 int tabMode = tmNone);
+  int  CenterPosR(int Col,
+                  int Row,
+                  int tabMode = tmNone);
+  int  SetNearPos(int Col,
+                  int Row,
+                  int tabMode = tmNone);
+  int  SetNearPosR(int Col,
+                   int Row,
+                   int tabMode = tmNone);
+  int  CenterNearPos(int Col,
+                     int Row,
+                     int tabMode = tmNone);
+  int  CenterNearPosR(int Col,
+                      int Row,
+                      int tabMode = tmNone);
+  int  LineLen(int Row);
+  int  LineChars(int Row);
 
-/////////////////////////////////////////////////////////////////////////////
-// Primitive Editing
-/////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////////////
+  // Undo/Redo Routines
+  // ///////////////////////////////////////////////////////////////////////////
 
-    //int ExpReg(int Row, int Ofs, int ACount, int &B, int &E);
-    int ScreenPos(ELine *L, int Offset);
-    int CharOffset(ELine *L, int ScreenPos);
-    int DelLine(int Row, int DoMark = 1);
-    int UnTabPoint(int Row, int Col);
-    int InsLine(int Row, int DoAppend, int DoMark = 1);
-    int DelChars(int Row, int Ofs, int ACount);
-    int InsChars(int Row, int Ofs, int ACount, const char *Buffer);
-    int InsertIndent(int Row, int Ofs, int ACount);
-    int ChgChars(int Row, int Ofs, int ACount, const char *Buffer);
-    int DelText(int Row, int Col, int ACount, int DoMark = 1);
-    int InsText(int Row, int Col, int ACount, const char *Buffer, int DoMark = 1);
-    int InsLineText(int Row, int Col, int ACount, int Pos, PELine Line);
-    int SplitLine(int Row, int Col);
-    int JoinLine(int Row, int Col);
-    int CanUnfold(int Row) const;
-    int PadLine(int Row, int Length);
+  int NextCommand();
+  int PushUData(void *data,
+                int   len);
+  int PushULong(unsigned long l);
+  int PushUChar(unsigned char ch);
+  int PopUData(void *data,
+               int   len);
+  int GetUData(int    No,
+               int    pos,
+               void **data,
+               int    len);
+  int Undo(int undo);
+  int Undo();
+  int Redo();
+  int BeginUndo();
+  int EndUndo();
+  int PushBlockData();
 
-    int ShowRow(int Row);
-    int HideRow(int Row);
-    int ExposeRow(int Row); // make row visible (open all folds containing)
+  // ///////////////////////////////////////////////////////////////////////////
+  // Primitive Editing
+  // ///////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////
-// Redraw/Windowing Routines
-/////////////////////////////////////////////////////////////////////////////
+  // int ExpReg(int Row, int Ofs, int ACount, int &B, int &E);
+  int ScreenPos(ELine *L,
+                int    Offset);
+  int CharOffset(ELine *L,
+                 int    ScreenPos);
+  int DelLine(int Row,
+              int DoMark = 1);
+  int UnTabPoint(int Row,
+                 int Col);
+  int InsLine(int Row,
+              int DoAppend,
+              int DoMark = 1);
+  int DelChars(int Row,
+               int Ofs,
+               int ACount);
+  int InsChars(int         Row,
+               int         Ofs,
+               int         ACount,
+               const char *Buffer);
+  int InsertIndent(int Row,
+                   int Ofs,
+                   int ACount);
+  int ChgChars(int         Row,
+               int         Ofs,
+               int         ACount,
+               const char *Buffer);
+  int DelText(int Row,
+              int Col,
+              int ACount,
+              int DoMark = 1);
+  int InsText(int         Row,
+              int         Col,
+              int         ACount,
+              const char *Buffer,
+              int         DoMark = 1);
+  int InsLineText(int    Row,
+                  int    Col,
+                  int    ACount,
+                  int    Pos,
+                  PELine Line);
+  int SplitLine(int Row,
+                int Col);
+  int JoinLine(int Row,
+               int Col);
+  int CanUnfold(int Row) const;
+  int PadLine(int Row,
+              int Length);
 
-    void Draw(int Line0, int LineE);
-    void DrawLine(TDrawBuffer B, int L, int C, int W, int &HilitX);
-    void Hilit(int FromRow);
-    void Rehilit(int ToRow);
-    void Redraw();
-    void FullRedraw();
-    int  GetHilitWord(int len, const char *str, ChColor &clr, int IgnCase = 0);
+  int ShowRow(int Row);
+  int HideRow(int Row);
+  int ExposeRow(int Row); // make row visible (open all folds containing)
 
-/////////////////////////////////////////////////////////////////////////////
-// Utility Routines
-/////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////////////
+  // Redraw/Windowing Routines
+  // ///////////////////////////////////////////////////////////////////////////
 
-    int LineIndented(int Row, const char *indentchars = 0);
-    int LineIndentedCharCount(ELine *l, const char *indentchars);
-    int IndentLine(int Row, int Indent);
-    int GetMap(int Row, int *StateLen, hsState **StateMap);
-    int FindStr(const char *Data, int Len, int Options);
-    int FindStr(const char *Data, int Len, SearchReplaceOptions &opt);
-    int FindRx(RxNode *Rx, SearchReplaceOptions &opt);
-    int Find(SearchReplaceOptions &opt);
-    int IsLineBlank(int Row) const;
-    int TrimLine(int Row);
+  void Draw(int Line0,
+            int LineE);
+  void DrawLine(TDrawBuffer B,
+                int         L,
+                int         C,
+                int         W,
+                int       & HilitX);
+  void Hilit(int FromRow);
+  void Rehilit(int ToRow);
+  void Redraw();
+  void FullRedraw();
+  int  GetHilitWord(int         len,
+                    const char *str,
+                    ChColor   & clr,
+                    int         IgnCase = 0);
 
-    int ScanForRoutines();
+  // ///////////////////////////////////////////////////////////////////////////
+  // Utility Routines
+  // ///////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////
-// Bookmark Routines
-/////////////////////////////////////////////////////////////////////////////
+  int LineIndented(int         Row,
+                   const char *indentchars = 0);
+  int LineIndentedCharCount(ELine      *l,
+                            const char *indentchars);
+  int IndentLine(int Row,
+                 int Indent);
+  int GetMap(int       Row,
+             int      *StateLen,
+             hsState **StateMap);
+  int FindStr(const char *Data,
+              int         Len,
+              int         Options);
+  int FindStr(const char           *Data,
+              int                   Len,
+              SearchReplaceOptions& opt);
+  int FindRx(RxNode               *Rx,
+             SearchReplaceOptions& opt);
+  int Find(SearchReplaceOptions& opt);
+  int IsLineBlank(int Row) const;
+  int TrimLine(int Row);
 
-    int PlaceBookmark(const char *Name, EPoint P);
-    int RemoveBookmark(const char *Name);
-    int GetBookmark(const char *Name, EPoint &P);
-    int GotoBookmark(const char *Name);
-    int GetBookmarkForLine(int searchFrom, int searchForLine, char *&Name, EPoint &P);
+  int ScanForRoutines();
 
-/////////////////////////////////////////////////////////////////////////////
-// Editing Routines
-/////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////////////
+  // Bookmark Routines
+  // ///////////////////////////////////////////////////////////////////////////
 
-    int     MoveLeft();
-    int     MoveRight();
-    int     MoveUp();
-    int     MoveDown();
-    int     MovePrev();
-    int     MoveNext();
-    int     MoveWordLeftX(int start);
-    int     MoveWordRightX(int start);
-    int     MoveWordLeft();
-    int     MoveWordRight();
-    int     MoveWordPrev();
-    int     MoveWordNext();
-    int     MoveWordEndLeft();
-    int     MoveWordEndRight();
-    int     MoveWordEndPrev();
-    int     MoveWordEndNext();
-    int     MoveWordOrCapLeft();
-    int     MoveWordOrCapRight();
-    int     MoveWordOrCapPrev();
-    int     MoveWordOrCapNext();
-    int     MoveWordOrCapEndLeft();
-    int     MoveWordOrCapEndRight();
-    int     MoveWordOrCapEndPrev();
-    int     MoveWordOrCapEndNext();
-//    int     MoveWordStart();
-//    int     MoveWordEnd();
-    int     MoveLineStart();
-    int     MoveLineEnd();
-    int     MovePageUp();
-    int     MovePageDown();
-    int     MovePageLeft();
-    int     MovePageRight();
-    int     MovePageStart();
-    int     MovePageEnd();
-    int     MoveFileStart();
-    int     MoveFileEnd();
-    int     MoveBlockStart();
-    int     MoveBlockEnd();
-    int     ScrollLeft(int Cols);
-    int     ScrollRight(int Cols);
-    int     ScrollDown(int Lines);
-    int     ScrollUp(int Lines);
-    int     MoveToLine();
-    int     MoveToColumn();
-    int     MoveFirstNonWhite();
-    int     MoveLastNonWhite();
-    int     MovePrevEqualIndent();
-    int     MoveNextEqualIndent();
-    int     MovePrevTab();
-    int     MoveNextTab();
-    int     MoveLineTop();
-    int     MoveLineCenter();
-    int     MoveLineBottom();
-    int     MovePrevPos();
-    int     MoveSavedPosCol();
-    int     MoveSavedPosRow();
-    int     MoveSavedPos();
-    int     SavePos();
-    int     MoveTabStart();
-    int     MoveTabEnd();
-    int     MoveFoldTop();
-    int     MoveFoldPrev();
-    int     MoveFoldNext();
-    int     MoveBeginOrNonWhite();
-    int     MoveBeginLinePageFile();
-    int     MoveEndLinePageFile();
+  int PlaceBookmark(const char *Name,
+                    EPoint      P);
+  int RemoveBookmark(const char *Name);
+  int GetBookmark(const char *Name,
+                  EPoint    & P);
+  int GotoBookmark(const char *Name);
+  int GetBookmarkForLine(int     searchFrom,
+                         int     searchForLine,
+                         char *& Name,
+                         EPoint& P);
 
-    int     KillLine();
-    int     KillChar();
-    int     KillCharPrev();
-    int     KillWord();
-    int     KillWordPrev();
-    int     KillWordOrCap();
-    int     KillWordOrCapPrev();
-    int     KillToLineStart();
-    int     KillToLineEnd();
-    int     KillBlock();
-    int     BackSpace();
-    int     Delete();
-    int     CompleteWord();
-    int     KillBlockOrChar();
-    int     KillBlockOrCharPrev();
+  // ///////////////////////////////////////////////////////////////////////////
+  // Editing Routines
+  // ///////////////////////////////////////////////////////////////////////////
+
+  int MoveLeft();
+  int MoveRight();
+  int MoveUp();
+  int MoveDown();
+  int MovePrev();
+  int MoveNext();
+  int MoveWordLeftX(int start);
+  int MoveWordRightX(int start);
+  int MoveWordLeft();
+  int MoveWordRight();
+  int MoveWordPrev();
+  int MoveWordNext();
+  int MoveWordEndLeft();
+  int MoveWordEndRight();
+  int MoveWordEndPrev();
+  int MoveWordEndNext();
+  int MoveWordOrCapLeft();
+  int MoveWordOrCapRight();
+  int MoveWordOrCapPrev();
+  int MoveWordOrCapNext();
+  int MoveWordOrCapEndLeft();
+  int MoveWordOrCapEndRight();
+  int MoveWordOrCapEndPrev();
+  int MoveWordOrCapEndNext();
+
+  //    int     MoveWordStart();
+  //    int     MoveWordEnd();
+  int MoveLineStart();
+  int MoveLineEnd();
+  int MovePageUp();
+  int MovePageDown();
+  int MovePageLeft();
+  int MovePageRight();
+  int MovePageStart();
+  int MovePageEnd();
+  int MoveFileStart();
+  int MoveFileEnd();
+  int MoveBlockStart();
+  int MoveBlockEnd();
+  int ScrollLeft(int Cols);
+  int ScrollRight(int Cols);
+  int ScrollDown(int Lines);
+  int ScrollUp(int Lines);
+  int MoveToLine();
+  int MoveToColumn();
+  int MoveFirstNonWhite();
+  int MoveLastNonWhite();
+  int MovePrevEqualIndent();
+  int MoveNextEqualIndent();
+  int MovePrevTab();
+  int MoveNextTab();
+  int MoveLineTop();
+  int MoveLineCenter();
+  int MoveLineBottom();
+  int MovePrevPos();
+  int MoveSavedPosCol();
+  int MoveSavedPosRow();
+  int MoveSavedPos();
+  int SavePos();
+  int MoveTabStart();
+  int MoveTabEnd();
+  int MoveFoldTop();
+  int MoveFoldPrev();
+  int MoveFoldNext();
+  int MoveBeginOrNonWhite();
+  int MoveBeginLinePageFile();
+  int MoveEndLinePageFile();
+
+  int KillLine();
+  int KillChar();
+  int KillCharPrev();
+  int KillWord();
+  int KillWordPrev();
+  int KillWordOrCap();
+  int KillWordOrCapPrev();
+  int KillToLineStart();
+  int KillToLineEnd();
+  int KillBlock();
+  int BackSpace();
+  int Delete();
+  int CompleteWord();
+  int KillBlockOrChar();
+  int KillBlockOrCharPrev();
 
 #define ccUp       0
 #define ccDown     1
 #define ccToggle   2
 
-    int     CharTrans(TransTable tab);
-    int     CharCaseUp();
-    int     CharCaseDown();
-    int     CharCaseToggle();
+  int CharTrans(TransTable tab);
+  int CharCaseUp();
+  int CharCaseDown();
+  int CharCaseToggle();
 
-    int     LineTrans(TransTable tab);
-    int     LineCaseUp();
-    int     LineCaseDown();
-    int     LineCaseToggle();
+  int LineTrans(TransTable tab);
+  int LineCaseUp();
+  int LineCaseDown();
+  int LineCaseToggle();
 
-    int     BlockTrans(TransTable tab);
-    int     BlockCaseUp();
-    int     BlockCaseDown();
-    int     BlockCaseToggle();
+  int BlockTrans(TransTable tab);
+  int BlockCaseUp();
+  int BlockCaseDown();
+  int BlockCaseToggle();
 
-    int     CharTrans(ExState &State);
-    int     LineTrans(ExState &State);
-    int     BlockTrans(ExState &State);
-    int     GetTrans(ExState &State, TransTable tab);
+  int CharTrans(ExState& State);
+  int LineTrans(ExState& State);
+  int BlockTrans(ExState& State);
+  int GetTrans(ExState  & State,
+               TransTable tab);
 
-    int     LineInsert();
-    int     LineAdd();
-    int     LineSplit();
-    int     LineJoin();
-    int     LineNew();
-    int     LineIndent();
-    int     LineTrim();
-    int     LineCenter();
-    int     FileTrim();
-    int     BlockTrim();
+  int LineInsert();
+  int LineAdd();
+  int LineSplit();
+  int LineJoin();
+  int LineNew();
+  int LineIndent();
+  int LineTrim();
+  int LineCenter();
+  int FileTrim();
+  int BlockTrim();
 
-    int     CanUndo();
-    int     CanRedo();
+  int CanUndo();
+  int CanRedo();
 
-    int     LineLen();
-    int     LineCount();
-    int     CLine();
-    int     CColumn();
+  int LineLen();
+  int LineCount();
+  int CLine();
+  int CColumn();
 
-    int     InsertChar(char aCh);
-    int     TypeChar(char aCh);
-    int     InsertString(const char *aStr, int aCount);
-    int     InsertSpacesToTab(int TSize);
-    int     InsertTab();
-    int     InsertSpace();
-    int     SelfInsert();
-    int     DoWrap(int WrapAll);
-    int     WrapPara();
-    int     InsPrevLineChar();
-    int     InsPrevLineToEol();
-    int     LineDuplicate();
+  int InsertChar(char aCh);
+  int TypeChar(char aCh);
+  int InsertString(const char *aStr,
+                   int         aCount);
+  int InsertSpacesToTab(int TSize);
+  int InsertTab();
+  int InsertSpace();
+  int SelfInsert();
+  int DoWrap(int WrapAll);
+  int WrapPara();
+  int InsPrevLineChar();
+  int InsPrevLineToEol();
+  int LineDuplicate();
 
-    int     GetMatchBrace(EPoint &M, int MinLine, int MaxLine, int show);
-    int     MatchBracket();
-    int     HilitMatchBracket();
+  int GetMatchBrace(EPoint& M,
+                    int     MinLine,
+                    int     MaxLine,
+                    int     show);
+  int MatchBracket();
+  int HilitMatchBracket();
 
-    int     BlockBegin();
-    int     BlockEnd();
-    int     BlockUnmark();
-    int     BlockCut(int Append);
-    int     BlockCopy(int Append, int clipboard = 0);
-    int     BlockPaste(int clipboard = 0);
-    int     BlockKill();
-    int     BlockIndent();
-    int     BlockUnindent();
-    int     BlockClear();
-    int     BlockMarkStream();
-    int     BlockMarkLine();
-    int     BlockMarkColumn();
-    int     BlockReadFrom(const char *aFileName, int blockMode);
-    int     BlockWriteTo(const char *aFileName, int Append = 0);
-    int     BlockExtendBegin();
-    int     BlockExtendEnd();
-    int     BlockReIndent();
-    int     BlockIsMarked();
-    int     BlockPasteStream(int clipboard = 0);
-    int     BlockPasteLine(int clipboard = 0);
-    int     BlockPasteColumn(int clipboard = 0);
-    int     BlockPasteOver(int clipboard = 0);
-    int     BlockSelectWord();
-    int     BlockSelectLine();
-    int     BlockSelectPara();
-    int     BlockPrint();
-    int     BlockSort(int Reverse);
-    int     ClipClear(int clipboard = 0);
-    int     BlockUnTab();
-    int     BlockEnTab();
+  int BlockBegin();
+  int BlockEnd();
+  int BlockUnmark();
+  int BlockCut(int Append);
+  int BlockCopy(int Append,
+                int clipboard = 0);
+  int BlockPaste(int clipboard = 0);
+  int BlockKill();
+  int BlockIndent();
+  int BlockUnindent();
+  int BlockClear();
+  int BlockMarkStream();
+  int BlockMarkLine();
+  int BlockMarkColumn();
+  int BlockReadFrom(const char *aFileName,
+                    int         blockMode);
+  int BlockWriteTo(const char *aFileName,
+                   int         Append = 0);
+  int BlockExtendBegin();
+  int BlockExtendEnd();
+  int BlockReIndent();
+  int BlockIsMarked();
+  int BlockPasteStream(int clipboard = 0);
+  int BlockPasteLine(int clipboard = 0);
+  int BlockPasteColumn(int clipboard = 0);
+  int BlockPasteOver(int clipboard = 0);
+  int BlockSelectWord();
+  int BlockSelectLine();
+  int BlockSelectPara();
+  int BlockPrint();
+  int BlockSort(int Reverse);
+  int ClipClear(int clipboard = 0);
+  int BlockUnTab();
+  int BlockEnTab();
 
-    int     ToggleAutoIndent();
-    int     ToggleInsert();
-    int     ToggleExpandTabs();
-    int     ToggleShowTabs();
-    int     ToggleUndo();
-    int     ToggleReadOnly();
-    int     ToggleKeepBackups();
-    int     ToggleMatchCase();
-    int     ToggleBackSpKillTab();
-    int     ToggleDeleteKillTab();
-    int     ToggleSpaceTabs();
-    int     ToggleIndentWithTabs();
-    int     ToggleBackSpUnindents();
-    int     ToggleWordWrap();
-    int     ToggleTrim();
-    int     ToggleShowMarkers();
-    int     ToggleHilitTags();
-    int     ToggleShowBookmarks();
-    int     ToggleMakeBackups();
-    int     SetLeftMargin();
-    int     SetRightMargin();
+  int ToggleAutoIndent();
+  int ToggleInsert();
+  int ToggleExpandTabs();
+  int ToggleShowTabs();
+  int ToggleUndo();
+  int ToggleReadOnly();
+  int ToggleKeepBackups();
+  int ToggleMatchCase();
+  int ToggleBackSpKillTab();
+  int ToggleDeleteKillTab();
+  int ToggleSpaceTabs();
+  int ToggleIndentWithTabs();
+  int ToggleBackSpUnindents();
+  int ToggleWordWrap();
+  int ToggleTrim();
+  int ToggleShowMarkers();
+  int ToggleHilitTags();
+  int ToggleShowBookmarks();
+  int ToggleMakeBackups();
+  int SetLeftMargin();
+  int SetRightMargin();
 
-    int     ShowPosition();
+  int ShowPosition();
 
-    int     Search(ExState &State, const char *aString, int Options, int CanResume = 0);
-    int     SearchAgain(ExState &State, unsigned int Options);
-    int     SearchReplace(ExState &State, const char *aString, const char *aReplaceString, int Options);
-    int     Search(ExState &State);
-    int     SearchB(ExState &State);
-    int     SearchRx(ExState &State);
-    int     SearchAgain(ExState &State);
-    int     SearchAgainB(ExState &State);
-    int     SearchReplace(ExState &State);
-    int     SearchReplaceB(ExState &State);
-    int     SearchReplaceRx(ExState &State);
+  int Search(ExState   & State,
+             const char *aString,
+             int         Options,
+             int         CanResume = 0);
+  int SearchAgain(ExState    & State,
+                  unsigned int Options);
+  int SearchReplace(ExState   & State,
+                    const char *aString,
+                    const char *aReplaceString,
+                    int         Options);
+  int Search(ExState& State);
+  int SearchB(ExState& State);
+  int SearchRx(ExState& State);
+  int SearchAgain(ExState& State);
+  int SearchAgainB(ExState& State);
+  int SearchReplace(ExState& State);
+  int SearchReplaceB(ExState& State);
+  int SearchReplaceRx(ExState& State);
 
-    int     HilitAddWord(const char *Word);
-    int     HilitFindWord(const char *Word);
-    int     HilitRemoveWord(const char *Word);
-    int     HilitWord();
-    int     SearchWord(int Flags);
+  int HilitAddWord(const char *Word);
+  int HilitFindWord(const char *Word);
+  int HilitRemoveWord(const char *Word);
+  int HilitWord();
+  int SearchWord(int Flags);
 
-    int     FindFold(int Line);
-    int     FindNearFold(int Line);
-    int     FoldCreate(int Line);
-    int     FoldCreateByRegexp(const char *Regexp);
-    int     FoldDestroy(int Line);
-    int     FoldDestroyAll();
-    int     FoldPromote(int Line);
-    int     FoldDemote(int Line);
-    int     FoldOpen(int Line);
-    int     FoldOpenAll();
-    int     FoldOpenNested();
-    int     FoldClose(int Line);
-    int     FoldCloseAll();
-    int     FoldToggleOpenClose();
+  int FindFold(int Line);
+  int FindNearFold(int Line);
+  int FoldCreate(int Line);
+  int FoldCreateByRegexp(const char *Regexp);
+  int FoldDestroy(int Line);
+  int FoldDestroyAll();
+  int FoldPromote(int Line);
+  int FoldDemote(int Line);
+  int FoldOpen(int Line);
+  int FoldOpenAll();
+  int FoldOpenNested();
+  int FoldClose(int Line);
+  int FoldCloseAll();
+  int FoldToggleOpenClose();
 
-    int     ChangeMode(const char *Mode);
-    int     ChangeKeys(const char *Mode);
-    int     ChangeFlags(const char *Mode);
+  int ChangeMode(const char *Mode);
+  int ChangeKeys(const char *Mode);
+  int ChangeFlags(const char *Mode);
 
-    int ScrollLeft(ExState &State);
-    int ScrollRight(ExState &State);
-    int ScrollDown(ExState &State);
-    int ScrollUp(ExState &State);
+  int ScrollLeft(ExState& State);
+  int ScrollRight(ExState& State);
+  int ScrollDown(ExState& State);
+  int ScrollUp(ExState& State);
 
-    /* editor functions with user interface */
+  /* editor functions with user interface */
 
-    int MoveToColumn(ExState &State);
-    int MoveToLine(ExState &State);
-    int FoldCreateByRegexp(ExState &State);
-    int PlaceUserBookmark(const char *n, EPoint P);
-    int RemoveUserBookmark(const char *n);
-    int GotoUserBookmark(const char *n);
-    int GetUserBookmarkForLine(int searchFrom, int searchForLine, char *&Name, EPoint &P);
-    int PlaceBookmark(ExState &State);
-    int RemoveBookmark(ExState &State);
-    int GotoBookmark(ExState &State);
-    int InsertString(ExState &State);
-    int SelfInsert(ExState &State);
-    int FileReload(ExState &State);
-    int FileSaveAs(const char *FileName);
-    int FileSaveAs(ExState &State);
-    int FileWriteTo(const char *FileName);
-    int FileWriteTo(ExState &State);
-    int BlockReadX(ExState &State, int BlockMode);
-    int BlockRead(ExState &State);
-    int BlockReadStream(ExState &State);
-    int BlockReadLine(ExState &State);
-    int BlockReadColumn(ExState &State);
-    int BlockWrite(ExState &State);
-    int Find(ExState &State);
-    int FindReplace(ExState &State);
-    int FindRepeat(ExState &State);
-    int FindRepeatOnce(ExState &State);
-    int FindRepeatReverse(ExState &State);
-    int InsertChar(ExState &State);
-    int TypeChar(ExState &State);
-    int ChangeMode(ExState &State);
-    int ChangeKeys(ExState &State);
-    int ChangeFlags(ExState &State);
-    int ChangeTabSize(ExState &State);
-    int ChangeRightMargin(ExState &State);
-    int ChangeLeftMargin(ExState &State);
+  int MoveToColumn(ExState& State);
+  int MoveToLine(ExState& State);
+  int FoldCreateByRegexp(ExState& State);
+  int PlaceUserBookmark(const char *n,
+                        EPoint      P);
+  int RemoveUserBookmark(const char *n);
+  int GotoUserBookmark(const char *n);
+  int GetUserBookmarkForLine(int     searchFrom,
+                             int     searchForLine,
+                             char *& Name,
+                             EPoint& P);
+  int         PlaceBookmark(ExState& State);
+  int         RemoveBookmark(ExState& State);
+  int         GotoBookmark(ExState& State);
+  int         InsertString(ExState& State);
+  int         SelfInsert(ExState& State);
+  int         FileReload(ExState& State);
+  int         FileSaveAs(const char *FileName);
+  int         FileSaveAs(ExState& State);
+  int         FileWriteTo(const char *FileName);
+  int         FileWriteTo(ExState& State);
+  int         BlockReadX(ExState& State,
+                         int      BlockMode);
+  int         BlockRead(ExState& State);
+  int         BlockReadStream(ExState& State);
+  int         BlockReadLine(ExState& State);
+  int         BlockReadColumn(ExState& State);
+  int         BlockWrite(ExState& State);
+  int         Find(ExState& State);
+  int         FindReplace(ExState& State);
+  int         FindRepeat(ExState& State);
+  int         FindRepeatOnce(ExState& State);
+  int         FindRepeatReverse(ExState& State);
+  int         InsertChar(ExState& State);
+  int         TypeChar(ExState& State);
+  int         ChangeMode(ExState& State);
+  int         ChangeKeys(ExState& State);
+  int         ChangeFlags(ExState& State);
+  int         ChangeTabSize(ExState& State);
+  int         ChangeRightMargin(ExState& State);
+  int         ChangeLeftMargin(ExState& State);
 
-    int ASCIITable(ExState &State);
+  int         ASCIITable(ExState& State);
 
-    int FindTag(ExState &State);
-    int FindTagWord(ExState &State);
+  int         FindTag(ExState& State);
+  int         FindTagWord(ExState& State);
 
-    int SetCIndentStyle(ExState &State);
+  int         SetCIndentStyle(ExState& State);
 
-    int FindFunction(int delta, int way);
-    int BlockMarkFunction();
-    int IndentFunction();
-    int MoveFunctionPrev();
-    int MoveFunctionNext();
-    int InsertDate(ExState& state);
-    int InsertUid();
+  int         FindFunction(int delta,
+                           int way);
+  int         BlockMarkFunction();
+  int         IndentFunction();
+  int         MoveFunctionPrev();
+  int         MoveFunctionNext();
+  int         InsertDate(ExState& state);
+  int         InsertUid();
 
-    int ShowHelpWord(ExState &State);
+  int         ShowHelpWord(ExState& State);
 
-    int PlaceGlobalBookmark(ExState &State);
-    int PushGlobalBookmark();
+  int         PlaceGlobalBookmark(ExState& State);
+  int         PushGlobalBookmark();
 
-    virtual int GetStrVar(int var, char *str, int buflen);
-    virtual int GetIntVar(int var, int *value);
+  virtual int GetStrVar(int   var,
+                        char *str,
+                        int   buflen);
+  virtual int GetIntVar(int  var,
+                        int *value);
 
-    int SetIndentWithTabs(ExState &State);
-    int FoldCreateAtRoutines();
+  int         SetIndentWithTabs(ExState& State);
+  int         FoldCreateAtRoutines();
 
-    int GetString(ExState &State);
-    int RegExp(ExState &State);
-    int ExpandTemplate(ExState &State);
+  int         GetString(ExState& State);
+  int         RegExp(ExState& State);
+  int         ExpandTemplate(ExState& State);
 };
 
 extern EBuffer *SSBuffer;
@@ -713,12 +858,19 @@ extern SearchReplaceOptions LSearch;
 
 extern int suspendLoads;
 
-int DoneEditor();
+int      DoneEditor();
 
-EBuffer *FindFile(const char *FileName);
+EBuffer* FindFile(const char *FileName);
 
-int ParseSearchOption(int replace, char c, unsigned long &opt);
-int ParseSearchOptions(int replace, const char *str, unsigned long &Options);
-int ParseSearchReplace(EBuffer *B, const char *str, int replace, SearchReplaceOptions &opt);
+int      ParseSearchOption(int            replace,
+                           char           c,
+                           unsigned long& opt);
+int      ParseSearchOptions(int            replace,
+                            const char    *str,
+                            unsigned long& Options);
+int      ParseSearchReplace(EBuffer              *B,
+                            const char           *str,
+                            int                   replace,
+                            SearchReplaceOptions& opt);
 
-#endif
+#endif // ifndef _BUFFER_H_

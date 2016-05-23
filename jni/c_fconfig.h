@@ -48,4 +48,4 @@
 
 #define CONFIG_ID   0x1A1D70E1
 
-#endif
+#endif // ifndef FCONFIG_H_
